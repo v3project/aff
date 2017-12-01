@@ -1,0 +1,38 @@
+{
+    "name": "v3project/aff",
+    "description": "Base app module v3project for skeeks cms",
+    "keywords": ["module", "cms", "skeeks", "sx", "app", "yii2"],
+    "homepage": "https://skeeks.com/",
+    "type": "yii2-extension",
+    "license": "GPL-3.0+",
+    "support": {
+        "issues": "https://cms.skeeks.com",
+        "source": "https://github.com/v3project/core-app"
+    },
+    "authors": [
+        {
+            "name": "Semenov Alexander",
+            "email": "semenov@skeeks.com"
+        }
+    ], 
+    "minimum-stability": "dev",
+    "require": {
+        "skeeks/cms": "~5.0.0 || dev-master",
+        "skeeks/cms-ya-map": "~1.1.0",
+        "v3toys/yii2-api": "~1.0.1",
+        "v3toys/yii2-v3project-api": "~1.0.1",
+        "v3project/yii2-helpers": "~1.0.8",
+        "skeeks/cms-dadata-suggest": "~1.1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "v3project\\aff\\": "src/"
+        }
+    },
+    "extra": {
+		"config-plugin": {
+            "web": "src/config/web.php",
+            "console": "src/config/console.php"
+        }
+    }
+}
