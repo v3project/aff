@@ -6,9 +6,14 @@
  * @date 06.11.2017
  */
 $config = [
-    'components'    =>
-    [
-        
+    'components' => [
+
+    ],
+
+    'modules' => [
+        'v3p' => [
+            'namespace' => 'v3p\aff\console\controllers',
+        ],
     ],
 ];
 
