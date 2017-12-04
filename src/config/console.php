@@ -12,7 +12,7 @@ $config = [
 
     'modules' => [
         'v3p' => [
-            'namespace' => 'v3p\aff\console\controllers',
+            'controllerNamespace' => 'v3p\aff\console\controllers',
         ],
     ],
 ];

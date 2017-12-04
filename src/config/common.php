@@ -7,6 +7,11 @@
  */
 $config = [
     'components' => [
+
+        'v3p' => [
+            'class' => \v3p\aff\V3pComponent::class,
+        ],
+
         'cmsAgent' => [
             'commands' => [
 

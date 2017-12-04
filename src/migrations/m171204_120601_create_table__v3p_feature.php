@@ -56,8 +56,6 @@ class m171204_120601_create_table__v3p_feature extends Migration
         $this->createIndex($tableName . '__priority', $tableName, 'priority');
         $this->createIndex($tableName . '__type', $tableName, 'type');
         $this->createIndex($tableName . '__is_disabled', $tableName, 'is_disabled');
-
-        $this->addCommentOnTable($tableName, '');
     }
 
     public function safeDown()

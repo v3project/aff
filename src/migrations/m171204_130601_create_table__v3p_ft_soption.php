@@ -68,7 +68,7 @@ class m171204_130601_create_table__v3p_ft_soption extends Migration
 
         $this->createIndex($tableName . '__tree', $tableName, ['lft', 'rgt', 'depth']);
 
-        $this->addForeignKey(
+        /*$this->addForeignKey(
             "{$tableName}__feature_id", $tableName,
             'feature_id', '{{%v3p_feature}}', 'id', 'CASCADE', 'CASCADE'
         );
@@ -76,7 +76,7 @@ class m171204_130601_create_table__v3p_ft_soption extends Migration
         $this->addForeignKey(
             "{$tableName}__parent_id", $tableName,
             'parent_id', '{{%v3p_ft_soption}}', 'id', 'CASCADE', 'CASCADE'
-        );
+        );*/
     }
 
     public function safeDown()
