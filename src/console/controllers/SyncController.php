@@ -13,6 +13,7 @@ use v3p\aff\models\V3pFeature;
 use v3p\aff\models\V3pFeatureValue;
 use v3p\aff\models\V3pFtSoption;
 use v3p\aff\models\V3pProduct;
+use v3p\aff\models\V3pProductFeatureValue;
 use yii\console\Controller;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
@@ -36,117 +37,20 @@ class SyncController extends Controller
      * Синхронизация характеристик
      * Учитывается время последнего обновления
      */
-    public function actionFeatures()
+    public function actionFeatures($isAll = 0)
     {
         $this->stdout("Синхронизация характеристик\n", Console::BOLD);
-
-        $query = (new \yii\db\Query())
-            ->from('apiv5.feature');
-
-        $lastFeature = V3pFeature::find()
-            ->orderBy(['updated_at' => SORT_DESC])
-            ->limit(1)
-            ->one();
-        if ($lastFeature) {
-            $date = \Yii::$app->formatter->asDatetime(date($lastFeature->updated_at));
-            $this->stdout("\tВремя обновления последней хар-ки: {$date}\n");
-            $query->andWhere(['>', 'updated_at', $lastFeature->updated_at]);
-        }
-
-        $count = $query->count("*", \Yii::$app->dbV3project);
-        $this->stdout("\tВсего характеристик: {$count}\n");
-
-        if (!$count) {
-            return;
-        }
-
-        foreach ($query->orderBy(['updated_at' => SORT_ASC])->each(1000, \Yii::$app->dbV3project) as $row) {
-
-            $this->stdout("\tХарактеристика: {$row['id']}, [{$row['title']}]");
-            if ($v3pFeature = V3pFeature::find()->andWhere(['id' => $row['id']])->one()) {
-                $this->stdout(" - обновление - ", Console::FG_YELLOW);
-
-                $v3pFeature->setAttributes($row);
-                if ($v3pFeature->save()) {
-                    $this->stdout(" - обновлена!\n", Console::FG_GREEN);
-                } else {
-                    $this->stdout(" - не обновлена - " . print_r($v3pFeature->errors, true) . " \n", Console::FG_RED);
-                }
-
-            } else {
-                $this->stdout(" - добавление - ");
-                $v3pFeature = new V3pFeature($row);
-                if ($v3pFeature->save()) {
-                    $this->stdout(" - добавлена!\n", Console::FG_GREEN);
-                } else {
-                    $this->stdout(" - не добавлена - " . print_r($v3pFeature->errors, true) . " \n", Console::FG_RED);
-                }
-            }
-        }
+        $this->_syncTable('feature', V3pFeature::class, $isAll);
     }
 
     /**
      * Синхронизация съопций
      * Учитывается время последнего обновления
      */
-    public function actionFtSoptions()
+    public function actionFtSoptions($isAll = 0)
     {
         $this->stdout("Синхронизация съопций\n", Console::BOLD);
-
-        $query = (new \yii\db\Query())
-            ->from('apiv5.ft_soption');
-
-        $last = V3pFtSoption::find()
-            ->orderBy(['updated_at' => SORT_DESC])
-            ->limit(1)
-            ->one();
-
-        if ($last) {
-            $date = \Yii::$app->formatter->asDatetime(date($last->updated_at));
-            $this->stdout("\tВремя обновления последней записи: {$date}\n");
-            //$query->andWhere(['>', 'updated_at', $last->updated_at]);
-        }
-
-        $count = $query->count("*", \Yii::$app->dbV3project);
-        $this->stdout("\tЗаписей к обновлению: {$count}\n");
-
-        if (!$count) {
-            return;
-        }
-
-        foreach ($query->orderBy(['updated_at' => SORT_ASC])->each(1000, \Yii::$app->dbV3project) as $row) {
-
-            $this->stdout("\tЗапись: {$row['id']}, [{$row['title']}]");
-
-            try {
-
-                if ($model = V3pFtSoption::find()->andWhere(['id' => $row['id']])->one()) {
-                    $this->stdout(" - обновление - ", Console::FG_YELLOW);
-
-                    $model->setAttributes($row);
-                    if ($model->save()) {
-                        $this->stdout(" - обновлена!\n", Console::FG_GREEN);
-                    } else {
-                        $this->stdout(" - не обновлена - " . print_r($model->errors, true) . " \n", Console::FG_RED);
-                    }
-
-                } else {
-                    $this->stdout(" - добавление - ");
-                    $model = new V3pFtSoption();
-                    $model->setAttributes($row);
-
-                    if ($model->save()) {
-                        $this->stdout(" - добавлена!\n", Console::FG_GREEN);
-                    } else {
-                        $this->stdout(" - не добавлена - " . print_r($model->errors, true) . " \n", Console::FG_RED);
-                    }
-                }
-
-            } catch (\Exception $e) {
-                $this->stdout(" - не добавлена - " . print_r($e->getMessage(), true) . " \n", Console::FG_RED);
-            }
-
-        }
+        $this->_syncTable('ft_soption', V3pFtSoption::class, $isAll);
     }
 
 
@@ -154,13 +58,40 @@ class SyncController extends Controller
      * Синхронизация характеристик
      * Учитывается время последнего обновления
      */
-    public function actionProductFeatureValues()
+    public function actionProductFeatureValues($isAll = 0)
     {
         $this->stdout("Синхронизация значений характеристик\n", Console::BOLD);
+        $this->_syncTable('product_feature_value', V3pProductFeatureValue::class, $isAll);
+    }
+    /**
+     * Синхронизация характеристик
+     * Учитывается время последнего обновления
+     */
+    public function actionProducts($isAll = 0)
+    {
+        $this->stdout("Синхронизация товаров\n", Console::BOLD);
+        $this->_syncTable('product', V3pProduct::class, $isAll);
+    }
+
+
+    protected function _syncTable($apiTable, $appModelClassName, $isAll = 0){
 
         $query = (new \yii\db\Query())
-            ->from('apiv5.product_feature_value');
+            ->from('apiv5.' . $apiTable);
 
+
+        $last = $appModelClassName::find()
+            ->orderBy(['updated_at' => SORT_DESC])
+            ->limit(1)
+            ->one();
+
+        if ($last && !$isAll) {
+            $date = \Yii::$app->formatter->asDatetime(date($last->updated_at));
+            $this->stdout("\tВремя обновления последней записи: {$date}\n");
+            $query->andWhere(['>=', 'updated_at', $last->updated_at]);
+
+
+        }
 
         $count = $query->count("*", \Yii::$app->dbV3project);
         $this->stdout("\tВсего: {$count}\n");
@@ -171,255 +102,30 @@ class SyncController extends Controller
 
         foreach ($query->orderBy(['updated_at' => SORT_ASC])->each(1000, \Yii::$app->dbV3project) as $row) {
 
-            $this->stdout("\tХарактеристика: {$row['id']}, [{$row['title']}]");
-            if ($v3pFeature = V3pFeature::find()->andWhere(['id' => $row['id']])->one()) {
+            $this->stdout("\tЭлемент: {$row['id']}");
+            if ($model = $appModelClassName::find()->andWhere(['id' => $row['id']])->one()) {
                 $this->stdout(" - обновление - ", Console::FG_YELLOW);
 
-                $v3pFeature->setAttributes($row);
-                if ($v3pFeature->save()) {
+                $model->setAttributes($row);
+                if ($model->save()) {
                     $this->stdout(" - обновлена!\n", Console::FG_GREEN);
                 } else {
-                    $this->stdout(" - не обновлена - " . print_r($v3pFeature->errors, true) . " \n", Console::FG_RED);
+                    $this->stdout(" - не обновлена - " . print_r($model->errors, true) . " \n", Console::FG_RED);
+                    die;
                 }
 
             } else {
                 $this->stdout(" - добавление - ");
-                $v3pFeature = new V3pFeature($row);
-                if ($v3pFeature->save()) {
+                $model = new $appModelClassName();
+                $model->setAttributes($row);
+                if ($model->save()) {
                     $this->stdout(" - добавлена!\n", Console::FG_GREEN);
                 } else {
-                    $this->stdout(" - не добавлена - " . print_r($v3pFeature->errors, true) . " \n", Console::FG_RED);
+                    $this->stdout(" - не добавлена - " . print_r($model->errors, true) . " \n", Console::FG_RED);
+                    die;
                 }
             }
         }
+
     }
-
-    /**
-     * Синхронизация товаров
-     * TODO:: добавить синхронизацию фич и цен может быть.
-     */
-    public function actionProducts($isAll = 0)
-    {
-        $contentId = \Yii::$app->v3p->cms_content_id;
-        if (!$contentId) {
-            $this->stdout("Не настроен V3Project комонент\n", Console::FG_RED);
-            return;
-        }
-
-        $total = V3pContentElement::find()->where(['content_id' => $contentId])->count();
-        $this->stdout("Всего товаров в базе сайта: {$total}\n", Console::BOLD);
-
-
-        $query = V3pContentElement::find()
-            ->where(['content_id' => $contentId])
-            ->joinWith('v3pProduct as v3p_product');
-
-        if ($isAll != 1) {
-            $query
-                ->andWhere([
-                    'v3p_product.updated_at' => null
-                ]);
-        }
-
-        $queryEach = clone $query;
-        $total = $query->count();
-        $this->stdout("Товаров к обновлению: {$total}\n", Console::BOLD);
-
-
-
-        if ($total) {
-            $i = 0;
-            $page = 0;
-            $step = 1000;
-
-            $pages = round($total / $step);
-            if ($pages == 0) {
-                $pages = 1;
-            }
-
-            $this->stdout("Всего страниц: {$pages}\n");
-            sleep(1);
-
-            for ($i >= 0; $i <= $total; $i++) {
-                if ($i % $step == 0) {
-
-                    $this->stdout("\tСтраница: {$page}\n");
-
-                    $elements = V3pContentElement::find()
-                        ->where(['content_id' => $contentId])
-                        ->orderBy(['id' => SORT_ASC])
-                        ->with('v3pProduct')
-                        ->limit($step)
-                        ->offset($step * $page);
-
-                    if ($elementsUpdate = $elements->all()) {
-                        $this->stdout('found: ' . count($elementsUpdate));
-                        $this->_updateElements($elementsUpdate);
-                    } else {
-                        $this->stdout('not found');
-                    }
-
-                    $page = $page + 1;
-
-                }
-
-            }
-        }
-
-
-        /*if ($total) {
-            /**
-             * @var $model V3pContentElement
-             * @var V3pProduct $v3pProduct
-            foreach ($queryEach->orderBy(['v3p_product.updated_at' => SORT_ASC])->each(100) as $model) {
-                $this->stdout("\t{$model->id}: {$model->name}");
-
-
-                if (!$v3pProduct = $model->v3pProduct) {
-                    $this->stdout(" - создание v3product", Console::FG_YELLOW);
-
-                    $v3pProduct = new V3pProduct([
-                        'id' => $element->id,
-                    ]);
-
-                    if (!$v3pProduct->save()) {
-                        $this->stdout(" - не создан", Console::FG_RED);
-                        continue;
-                    } else {
-                        $this->stdout(" - создан\n", Console::FG_GREEN);
-                    }
-                };
-
-                $v3p_product_id = $v3pProduct->v3p_product_id;
-
-                if ($v3p_product_id) {
-                    $query2 = (new \yii\db\Query())
-                        ->from('apiv5.product')
-                        ->andWhere(['id' => $v3p_product_id])
-                        ->limit(1);
-
-                    $dataAdditional = $query2->one(\Yii::$app->dbV3project);
-
-                    if ($dataAdditional) {
-
-                        $v3pProduct->sku = ArrayHelper::getValue($dataAdditional, 'sku');
-                        $v3pProduct->stock_barcodes = ArrayHelper::getValue($dataAdditional, 'stock_barcodes');
-                        $v3pProduct->astype = ArrayHelper::getValue($dataAdditional, 'astype');
-                        $v3pProduct->general_ast_product_id = ArrayHelper::getValue($dataAdditional, 'general_ast_product_id');
-                        $v3pProduct->nn_in_general_ast_product = ArrayHelper::getValue($dataAdditional, 'nn_in_general_ast_product');
-                        $v3pProduct->eneral_ast_product_sku = ArrayHelper::getValue($dataAdditional, 'eneral_ast_product_sku');
-                        $v3pProduct->is_disabled = ArrayHelper::getValue($dataAdditional, 'is_disabled');
-                        $v3pProduct->created_at = ArrayHelper::getValue($dataAdditional, 'created_at');
-                        $v3pProduct->updated_at = ArrayHelper::getValue($dataAdditional, 'updated_at');
-
-
-                        if ($v3pProduct->save()) {
-                            $this->stdout(" - Данные сохранены\n", Console::FG_GREEN);
-                        } else {
-                            $this->stdout(" - Данные не сохранены: " . print_r($v3pProduct->errors, true) . "\n", Console::FG_RED);
-                        }
-
-                    } else {
-                        $model->active = "N";
-                        $model->save();
-                        $this->stdout(" - Данные не получены со стороны V3Project\n", Console::FG_RED);
-                    }
-                } else {
-                    $this->stdout(" - v3project_id не указан\n", Console::FG_RED);
-                    continue;
-                }
-            }
-        }*/
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * @param V3pContentElement[] $elements
-     */
-    protected function _updateElements($elements)
-    {
-        if ($elements) {
-            $count = count($elements);
-            $this->stdout("\t\tНайдено товаров: {$count}\n");
-
-            $v3toysIds = [];
-            foreach ($elements as $element) {
-                if ($element->v3pProduct) {
-                    $v3toysIds[] = $element->v3pProduct->v3p_product_id;
-                }
-            }
-
-            if (!$v3toysIds) {
-                $this->stdout("\t\tНе надйено v3project id товаров для обновления\n");
-            }
-
-            $query = (new \yii\db\Query())
-                ->from('apiv5.product')
-                ->indexBy('id')
-                ->andWhere(['id' => $v3toysIds]);
-
-            $v3Data = $query->all(\Yii::$app->dbV3project);
-
-            $count = count($v3Data);
-            $this->stdout("\t\tНайдено товаров в базе V3Project: {$count}\n");
-
-            foreach ($elements as $element) {
-
-                $v3pProduct = $element->v3pProduct;
-                $v3id = $element->v3pProduct->v3p_product_id;
-                $this->stdout("\t\t{$v3id}: {$element->name}", Console::BOLD);
-
-                if ($v3id) {
-                    if (!$dataAdditional = ArrayHelper::getValue($v3Data, $v3id)) {
-                        $this->stdout(" - Нет данных по товару\n", Console::FG_RED);
-                        continue;
-                    }
-
-                    if ($dataAdditional) {
-
-                        $v3pProduct->sku = ArrayHelper::getValue($dataAdditional, 'sku');
-                        $v3pProduct->stock_barcodes = ArrayHelper::getValue($dataAdditional, 'stock_barcodes');
-                        $v3pProduct->astype = ArrayHelper::getValue($dataAdditional, 'astype');
-                        $v3pProduct->general_ast_product_id = ArrayHelper::getValue($dataAdditional, 'general_ast_product_id');
-                        $v3pProduct->nn_in_general_ast_product = ArrayHelper::getValue($dataAdditional, 'nn_in_general_ast_product');
-                        $v3pProduct->eneral_ast_product_sku = ArrayHelper::getValue($dataAdditional, 'eneral_ast_product_sku');
-                        $v3pProduct->is_disabled = ArrayHelper::getValue($dataAdditional, 'is_disabled');
-                        $v3pProduct->created_at = ArrayHelper::getValue($dataAdditional, 'created_at');
-                        $v3pProduct->updated_at = ArrayHelper::getValue($dataAdditional, 'updated_at');
-
-
-                        if ($v3pProduct->save()) {
-                            $this->stdout(" - Данные сохранены\n", Console::FG_GREEN);
-                        } else {
-                            $this->stdout(" - Данные не сохранены: " . print_r($v3pProduct->errors, true) . "\n", Console::FG_RED);
-                        }
-
-                    } else {
-                        $element->active = "N";
-                        $element->save();
-                        $this->stdout(" - Данные не получены со стороны V3Project\n", Console::FG_RED);
-                    }
-
-
-
-                } else {
-                    $this->stdout(" - Нет v3id\n", Console::FG_RED);
-                }
-
-            }
-        }
-    }
-
 }

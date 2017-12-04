@@ -27,6 +27,9 @@ class m171204_150601_create_table__v3p_product_feature_value extends Migration
         $this->createTable($tableName, [
             'id' => $this->primaryKey(),
 
+            'created_at' => $this->dateTime(),
+            'updated_at' => $this->dateTime(),
+
             'product_id' => $this->integer()->notNull(),
             'feature_id' => $this->integer()->notNull(),
 
@@ -47,6 +50,16 @@ class m171204_150601_create_table__v3p_product_feature_value extends Migration
             'ft_json_value' => $this->string(),
 
             'ft_bool_value' => $this->boolean(),
+            'check_is_valid' => $this->boolean(),
+            'feature_type' => $this->string(255),
+            'feature_min_value' => $this->integer(),
+            'feature_max_value' => $this->integer(),
+            'feature_min_choosen_soption_depth' => $this->integer(),
+            'feature_max_choosen_soption_depth' => $this->integer(),
+            'ft_soption_depth' => $this->integer(),
+            'feature_priority' => $this->integer(),
+            'feature_value_as_json' => $this->string(255),
+            'feature_value_as_text' => $this->string(255),
 
         ], $tableOptions);
 
