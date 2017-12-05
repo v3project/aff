@@ -1,0 +1,38 @@
+.sx-product-filter-wrapper {
+    border-bottom: 1px solid silver;
+}
+
+.sx-product-filter-wrapper .form-group > label {
+    text-transform: uppercase;
+}
+
+.sx-product-filter-wrapper .form-group label {
+    display: block;
+}
+
+.sx-product-filter-wrapper .sx-product-filter-checkbox-wrapper {
+    max-height: 150px;
+}
+
+.sx-hidden-filters {
+    display: none;
+}
+
+
+.sx-product-filter-wrapper {
+    border-bottom: 1px solid #c0c0c085;
+    margin-bottom: 5px;
+}
+
+.sx-product-filter-wrapper .form-group > label {
+    text-transform: uppercase;
+}
+
+.sx-product-filter-wrapper .form-group label {
+    display: block;
+}
+
+.sx-product-filter-wrapper .sx-product-filter-checkbox-wrapper {
+    max-height: 150px;
+    overflow-x: auto;
+}
