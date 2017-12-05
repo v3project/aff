@@ -57,10 +57,13 @@ class V3pProductFeatureValue extends ActiveRecord
     public function rules()
     {
         return [
+            [['ft_bool_value'], 'boolean'],
+            [['ft_num_value', 'ft_num_value2'], 'number'],
+            [['ft_text_value', 'feature_value_as_json', 'feature_value_as_text'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['product_id', 'feature_id', 'feature_value_type'], 'required'],
-            [['product_id', 'feature_id', 'ft_soption_id', 'ft_int_value', 'ft_int_value2', 'ft_num_value', 'ft_num_value2', 'ft_bool_value', 'check_is_valid', 'feature_min_value', 'feature_max_value', 'feature_min_choosen_soption_depth', 'feature_max_choosen_soption_depth', 'ft_soption_depth', 'feature_priority'], 'integer'],
-            [['feature_value_type', 'ft_not_value', 'ft_string_value', 'ft_text_value', 'ft_json_value', 'feature_type', 'feature_value_as_json', 'feature_value_as_text'], 'string', 'max' => 255],
+            [['id', 'product_id', 'feature_id', 'ft_soption_id', 'ft_int_value', 'ft_int_value2', 'check_is_valid', 'feature_min_value', 'feature_max_value', 'feature_min_choosen_soption_depth', 'feature_max_choosen_soption_depth', 'ft_soption_depth', 'feature_priority'], 'integer'],
+            [['feature_value_type', 'ft_not_value', 'ft_string_value', 'ft_json_value', 'feature_type'], 'string', 'max' => 255],
         ];
     }
 

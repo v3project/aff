@@ -38,16 +38,16 @@ class m171204_150601_create_table__v3p_product_feature_value extends Migration
             'ft_not_value' => $this->string(255),
             'ft_soption_id' => $this->integer(),
 
-            'ft_string_value' => $this->string(255),
-            'ft_text_value' => $this->string(255),
+            'ft_string_value' => $this->text(),
+            'ft_text_value' => $this->text(),
 
             'ft_int_value' => $this->integer(),
             'ft_int_value2' => $this->integer(),
 
-            'ft_num_value' => $this->integer(),
-            'ft_num_value2' => $this->integer(),
+            'ft_num_value' => $this->decimal(24,4),
+            'ft_num_value2' => $this->decimal(24,4),
 
-            'ft_json_value' => $this->string(),
+            'ft_json_value' => $this->text(),
 
             'ft_bool_value' => $this->boolean(),
             'check_is_valid' => $this->boolean(),

@@ -51,7 +51,9 @@ class V3pProduct extends ActiveRecord
     {
         return [
             [['created_at', 'updated_at'], 'safe'],
-            [['guiding_available_quantity', 'guiding_available_nsk_quantity', 'general_ast_product_id', 'nn_in_general_ast_product', 'duplicate_of_product_id',
+            [['guiding_available_quantity', 'guiding_available_nsk_quantity', 'general_ast_product_id', 'nn_in_general_ast_product',
+                'duplicate_of_product_id',
+                'id',
                 //'is_disabled'
             ], 'integer'],
             [['guiding_buy_price', 'guiding_realize_price', 'mr_price'], 'number'],
