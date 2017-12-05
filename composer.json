@@ -17,7 +17,8 @@
     ], 
     "minimum-stability": "dev",
     "require": {
-        "skeeks/cms": "~5.0.0 || dev-master",
+        "skeeks/cms": "~5.0.0 || dev-master@dev",
+        "skeeks/yii2-query-filter": "dev-master@dev",
         "skeeks/cms-ya-map": "~1.1.0",
         "v3toys/yii2-api": "~1.0.1",
         "v3toys/yii2-v3project-api": "~1.0.1",
