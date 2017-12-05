@@ -6,8 +6,8 @@
  * @date 13.11.2017
  */
 /* @var $this yii\web\View */
-/* @var $widget \yv\widgets\filters\ProductFilterWidget */
-\v3p\aff\widgets\filter\assets\ProductFiterWidgetAsset::register($this);
+/* @var $widget \v3p\aff\widgets\filter\V3pProductFiterWidget */
+\v3p\aff\widgets\filter\assets\V3pProductFiterWidgetAsset::register($this);
 $this->registerJs(<<<JS
 new sx.classes.ProductFilters();
 JS
@@ -24,12 +24,8 @@ $widget = $this->context;
         ]
     ]
 ]); ?>
-<? foreach ($widget->filtersHandlers as $filtersHandler) : ?>
-    <? if ($filtersHandler->toArray()) : ?>
-        <? foreach ($filtersHandler->toArray() as $key => $value) : ?>
-            <?= $filtersHandler->renderByAttribute($key, $form); ?>
-        <? endforeach; ?>
-    <? endif; ?>
+<? foreach ($widget->handlers as $filtersHandler) : ?>
+    <?= $filtersHandler->render($form); ?>
 <? endforeach; ?>
 <button type="submit" class="btn btn-default">Применить</button>
 <? \yii\widgets\ActiveForm::end(); ?>

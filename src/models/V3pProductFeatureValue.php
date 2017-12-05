@@ -10,6 +10,7 @@ namespace v3p\aff\models;
 
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\Json;
 
 /**
  * This is the model class for table "v3p_product_feature_value".
@@ -40,6 +41,12 @@ use yii\db\ActiveRecord;
  * @property integer $feature_priority
  * @property string $feature_value_as_json
  * @property string $feature_value_as_text
+ *
+ * ***
+ *
+ * @property string $valueAsText
+ * @property V3pFeature $feature
+ * @property V3pFtSoption $ftSoption
  */
 class V3pProductFeatureValue extends ActiveRecord
 {
@@ -62,8 +69,29 @@ class V3pProductFeatureValue extends ActiveRecord
             [['ft_text_value', 'feature_value_as_json', 'feature_value_as_text'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['product_id', 'feature_id', 'feature_value_type'], 'required'],
-            [['id', 'product_id', 'feature_id', 'ft_soption_id', 'ft_int_value', 'ft_int_value2', 'check_is_valid', 'feature_min_value', 'feature_max_value', 'feature_min_choosen_soption_depth', 'feature_max_choosen_soption_depth', 'ft_soption_depth', 'feature_priority'], 'integer'],
-            [['feature_value_type', 'ft_not_value', 'ft_string_value', 'ft_json_value', 'feature_type'], 'string', 'max' => 255],
+            [
+                [
+                    'id',
+                    'product_id',
+                    'feature_id',
+                    'ft_soption_id',
+                    'ft_int_value',
+                    'ft_int_value2',
+                    'check_is_valid',
+                    'feature_min_value',
+                    'feature_max_value',
+                    'feature_min_choosen_soption_depth',
+                    'feature_max_choosen_soption_depth',
+                    'ft_soption_depth',
+                    'feature_priority'
+                ],
+                'integer'
+            ],
+            [
+                ['feature_value_type', 'ft_not_value', 'ft_string_value', 'ft_json_value', 'feature_type'],
+                'string',
+                'max' => 255
+            ],
         ];
     }
 
@@ -105,14 +133,120 @@ class V3pProductFeatureValue extends ActiveRecord
     /**
      * @return ActiveQuery
      */
-    public function GETproduct() { return $this->hasOne(V3pProduct::class, ['id' => 'product_id']); }
-    /**
-     * @return ActiveQuery
-     */
-    public function GETfeature() { return $this->hasOne(V3pProduct::class, ['id' => 'feature_id']); }
+    public function GETproduct()
+    {
+        return $this->hasOne(V3pProduct::class, ['id' => 'product_id']);
+    }
 
     /**
      * @return ActiveQuery
      */
-    public function GETft_soption() { return $this->hasOne(V3pFtSoption::class, ['id' => 'ft_soption_id']); }
+    public function getFeature()
+    {
+        return $this->hasOne(V3pFeature::class, ['id' => 'feature_id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getFtSoption()
+    {
+        return $this->hasOne(V3pFtSoption::class, ['id' => 'ft_soption_id']);
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getValueAsText()
+    {
+        $feature = $this->feature;
+
+        if ($this->ft_not_value)
+        {
+            return $this->ft_not_value;
+        }
+
+        /*if ($feature->key == 'astype')
+        {
+            if ($this->ft_json_value)
+            {
+                $data = Json::decode($this->ft_json_value);
+                return (string) ArrayHelper::getValue($data, 'astype')  . "\n" .  $this->ft_json_value;
+            }
+        }*/
+
+        if (in_array($feature->value_type, [
+            V3pFeature::VALUE_TYPE_ANY_SOPTION,
+            V3pFeature::VALUE_TYPE_LEAF_SOPTION,
+        ]))
+        {
+            return $this->ftSoption ? $this->ftSoption->title : '-';
+        }
+
+        if (in_array($feature->value_type, [
+            V3pFeature::VALUE_TYPE_INT,
+        ]))
+        {
+            return (string) $this->ft_int_value  . " " . $feature->measure_title;;
+        }
+
+        if (in_array($feature->value_type, [
+            V3pFeature::VALUE_TYPE_NUM,
+        ]))
+        {
+            return (string) $this->ft_num_value  . " " . $feature->measure_title;;
+        }
+
+        if (in_array($feature->value_type, [
+            V3pFeature::VALUE_TYPE_TEXT,
+        ]))
+        {
+            return (string) $this->ft_text_value;
+        }
+
+
+        if (in_array($feature->value_type, [
+            V3pFeature::VALUE_TYPE_JSON,
+        ]))
+        {
+            if ($this->ft_json_value)
+            {
+                return (string) print_r(Json::decode($this->ft_json_value), true);
+            } else
+            {
+                return (string) $this->ft_json_value;
+            }
+        }
+
+        if (in_array($feature->value_type, [
+            V3pFeature::VALUE_TYPE_STRING,
+        ]))
+        {
+            return (string) $this->ft_string_value;
+        }
+
+        if (in_array($feature->value_type, [
+            V3pFeature::VALUE_TYPE_INT_RANGE,
+        ]))
+        {
+            return (string) "от " . $this->ft_int_value . " до " . $this->ft_int_value2 . " " . $feature->measure_title;
+        }
+
+        if (in_array($feature->value_type, [
+            V3pFeature::VALUE_TYPE_NUM_RANGE,
+        ]))
+        {
+            return (string) "от " . $this->ft_num_value . " до " . $this->ft_num_value2 . " " . $feature->measure_title;
+        }
+
+        if (in_array($feature->value_type, [
+            V3pFeature::VALUE_TYPE_BOOL,
+        ]))
+        {
+            return (string) \Yii::$app->formatter->asBoolean($this->ft_bool_value);
+        }
+
+        throw new Exception('!!!');
+    }
 }

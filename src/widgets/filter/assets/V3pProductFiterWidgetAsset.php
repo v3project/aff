@@ -12,7 +12,7 @@ use yii\web\AssetBundle;
  * Class ProductFiterWidgetAsset
  * @package v3p\aff\widgets\filter\assets
  */
-class ProductFiterWidgetAsset extends AssetBundle
+class V3pProductFiterWidgetAsset extends AssetBundle
 {
     public $sourcePath = '@v3p/aff/widgets/filter/assets/src';
 

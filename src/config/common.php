@@ -17,7 +17,25 @@ $config = [
 
                 'v3p/sync/features' => [
                     'class' => \skeeks\cms\agent\CmsAgent::class,
-                    'name' => 'Синхронизация характеристик V3Project',
+                    'name' => 'Синхронизация новых характеристик V3Project',
+                    'interval' => 3600 * 1,
+                ],
+
+                'v3p/sync/ft-soptions' => [
+                    'class' => \skeeks\cms\agent\CmsAgent::class,
+                    'name' => 'Синхронизация новых съопций V3Project',
+                    'interval' => 3600 * 1,
+                ],
+
+                'v3p/sync/product-feature-values' => [
+                    'class' => \skeeks\cms\agent\CmsAgent::class,
+                    'name' => 'Синхронизация новых значений V3Project',
+                    'interval' => 3600 * 1,
+                ],
+
+                'v3p/sync/products' => [
+                    'class' => \skeeks\cms\agent\CmsAgent::class,
+                    'name' => 'Синхронизация данных товаров V3Project',
                     'interval' => 3600 * 2,
                 ],
             ],

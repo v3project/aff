@@ -32,10 +32,22 @@ use yii\db\ActiveRecord;
  *
  * ***
  *
- * @property V3pFtSoption[] $ft_soptions
+ * @property V3pFtSoption[] $ftSoptions
+ * @property V3pFtSoption[] $ftSoptions
  */
 class V3pFeature extends ActiveRecord
 {
+    const VALUE_TYPE_LEAF_SOPTION = 'leaf_soption';
+    const VALUE_TYPE_ANY_SOPTION = 'any_soption';
+    const VALUE_TYPE_BOOL = 'bool';
+    const VALUE_TYPE_INT = 'int';
+    const VALUE_TYPE_NUM = 'num';
+    const VALUE_TYPE_INT_RANGE = 'int_range';
+    const VALUE_TYPE_NUM_RANGE = 'num_range';
+    const VALUE_TYPE_JSON = 'json';
+    const VALUE_TYPE_STRING = 'string';
+    const VALUE_TYPE_TEXT = 'text';
+
     /**
      * @inheritdoc
      */
@@ -97,7 +109,7 @@ class V3pFeature extends ActiveRecord
     /**
      * @return ActiveQuery
      */
-    public function GETft_soptions()
+    public function GETftSoptions()
     {
         return $this->hasMany(V3pFtSoption::class, ['feature_id' => 'id']);
     }
