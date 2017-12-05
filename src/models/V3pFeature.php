@@ -33,10 +33,13 @@ use yii\db\ActiveRecord;
  * ***
  *
  * @property V3pFtSoption[] $ftSoptions
- * @property V3pFtSoption[] $ftSoptions
  */
 class V3pFeature extends ActiveRecord
 {
+    public static function primaryKey() {
+        return ['id'];
+    }
+
     const VALUE_TYPE_LEAF_SOPTION = 'leaf_soption';
     const VALUE_TYPE_ANY_SOPTION = 'any_soption';
     const VALUE_TYPE_BOOL = 'bool';

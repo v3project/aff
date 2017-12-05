@@ -36,6 +36,10 @@ use yii\db\ActiveQuery;
  */
 class V3pFtSoption extends \yii\db\ActiveRecord
 {
+    public static function primaryKey() {
+        return ['id'];
+    }
+
     /**
      * @inheritdoc
      */
@@ -100,7 +104,7 @@ class V3pFtSoption extends \yii\db\ActiveRecord
      */
     public function GETfeatureValues()
     {
-        return $this->hasMany(V3pFeatureValue::class, ['ft_soption_id' => 'id']);
+        return $this->hasMany(V3pProductFeatureValue::class, ['ft_soption_id' => 'id']);
     }
 
 }
