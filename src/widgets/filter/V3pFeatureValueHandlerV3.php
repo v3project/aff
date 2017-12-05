@@ -10,7 +10,6 @@ namespace v3p\aff\widgets\filter;
 
 use backend\models\cont\Feature;
 use backend\models\cont\FeatureValue;
-use skeeks\cms\models\CmsContentElement;
 use skeeks\yii2\queryfilter\IQueryFilterHandler;
 use v3p\aff\models\V3pFeature;
 use v3p\aff\models\V3pFtSoption;
@@ -51,53 +50,40 @@ class V3pFeatureValueHandler extends DynamicModel
     public function smartInit(ActiveQuery $baseQuery)
     {
         $activeQuery = clone $baseQuery;
-        $activeQuery2 = clone $baseQuery;
 
+        /*$activeQuery->joinWith(['v3toysProductProperty as v3property']);
+        $activeQuery->select(['v3property.v3toys_id']);*/
+        $activeQuery->select(['id']);
+        $this->ids_query = $activeQuery;
 
-        //$activeQuery->joinWith(['v3toysProductProperty as v3property']);
-        $activeQuery2->joinWith(['v3toysProductProperty.productFeatureValues as fv']);
-        $activeQuery2->select(['fv.feature_id as id']);
-        $activeQuery2->distinct(['fv.feature_id' => true]);
-        $activeQuery2->andWhere(['fv.feature_type' => 'детальная']);
-        $activeQuery2->orderBy = [];
-        $activeQuery2->groupBy = [];
-        $activeQuery2->with = [];
-
-        $this->_feature_ids = $activeQuery2->asArray()->all();
+        $this->_feature_ids = V3pProductFeatureValue::find()
+            ->where(['product_id' => $activeQuery])
+            ->distinct(['feature_id' => true])
+            ->select([
+                'feature_id'
+            ])
+            ->asArray()
+            //->indexBy(['feature_id'])
+            ->all();
 
         if ($this->_feature_ids) {
-            $this->_feature_ids = ArrayHelper::map($this->_feature_ids, 'id', 'id');
+            $this->_feature_ids = ArrayHelper::map($this->_feature_ids, 'feature_id', 'feature_id');
         }
 
 
+        $query = V3pFeature::find();
         if ($this->_feature_ids) {
-            $query = V3pFeature::find();
             $query->andWhere([
                 'id' => $this->_feature_ids
             ]);
-            /**
-             * @var V3pFeature $feature
-             */
-            if ($features = $query->all()) {
-                foreach ($features as $feature) {
-                    $this->_featureInit($feature);
-                }
-            }
-        } else {
-            return false;
         }
-
-
-
-        $activeQuery->joinWith(['v3toysProductProperty as v3property']);
-        $activeQuery->select(['v3property.v3toys_id as id']);
-        $activeQuery->orderBy = [];
-        $activeQuery->groupBy = [];
-        $activeQuery->with = [];
-
-        $this->ids_query = $activeQuery->asArray()->all();
-        if ($this->ids_query) {
-            $this->ids_query = ArrayHelper::map($this->ids_query, 'id', 'id');
+        /**
+         * @var V3pFeature $feature
+         */
+        if ($features = $query->all()) {
+            foreach ($features as $feature) {
+                $this->_featureInit($feature);
+            }
         }
 
         return $this;
@@ -400,23 +386,16 @@ class V3pFeatureValueHandler extends DynamicModel
                     $applyFilters = true;
                     $queryPart = V3pProductFeatureValue::find()->andWhere(['feature_id' => $feature->id])->select(['product_id as id']);
 
-                    if (in_array($feature->value_type, [
-                        V3pFeature::VALUE_TYPE_ANY_SOPTION,
-                        V3pFeature::VALUE_TYPE_LEAF_SOPTION,
-                    ])) {
-                        if (is_array($this->{$key})) {
-                            $queryPart->andWhere(['ft_soption_id' => $this->{$key}]);
-                        }
-                    } elseif (in_array($feature->value_type, [
-                        V3pFeature::VALUE_TYPE_BOOL,
-                    ])) {
-                        $queryPart->andWhere(['ft_bool_value' => $this->{$key}]);
+                    if (is_array($this->{$key})) {
+                        $queryPart->andWhere(['ft_soption_id' => $this->{$key}]);
                     }
 
                     $unionQueries[] = $queryPart;
                 }
+
             }
         }
+
 
         if ($applyFilters) {
             if ($unionQueries) {
@@ -443,9 +422,7 @@ class V3pFeatureValueHandler extends DynamicModel
             }
 
             //print_r($unionQuery->createCommand()->rawSql);die;
-            $activeQuery->joinWith(['v3toysProductProperty as v3property']);
-            $activeQuery->andWhere(['in', 'v3property.v3toys_id', $unionQuery]);
-            //print_r($activeQuery->createCommand()->rawSql);die;
+            $activeQuery->andWhere(['in', V3pProduct::tableName() . '.id', $unionQuery]);
         }
 
 

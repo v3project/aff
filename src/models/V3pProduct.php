@@ -99,15 +99,15 @@ class V3pProduct extends ActiveRecord
     /**
      * @return ActiveQuery
      */
-    public function GETfeatureValues()
+    public function getProductFeatureValues()
     {
-        return $this->hasMany(V3pFeatureValue::class, ['feature_id' => 'id']);
+        return $this->hasMany(V3pProductFeatureValue::class, ['feature_id' => 'id']);
     }
 
     /**
      * @return ActiveQuery
      */
-    public function GETft_soptions()
+    public function getFtSoptions()
     {
         return $this->hasMany(V3pFtSoption::class, ['feature_id' => 'id']);
     }
