@@ -15,7 +15,7 @@ use skeeks\yii2\queryfilter\QueryFilterWidget;
  * Class V3pProductFiterWidget
  * @package v3p\aff\widgets\filter
  */
-class V3pProductFiterWidget extends QueryFilterWidget
+class V3pProductFiterWidget extends QueryFilterShortUrlWidget
 {
     /**
      * @var string
@@ -27,13 +27,15 @@ class V3pProductFiterWidget extends QueryFilterWidget
      */
     public function init()
     {
-        //\Yii::$app->canurl->ADDimportant_pname($this->filtersParamName);
+        \Yii::$app->canurl->ADDimportant_pname($this->filtersParamName);
         parent::init();
     }
 
 
     public function loadFromRequest()
     {
+        return parent::loadFromRequest();
+
         if ($this->handlers) {
             $names = [];
             foreach ($this->handlers as $handler) {
