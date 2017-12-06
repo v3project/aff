@@ -16,7 +16,7 @@ JS
 $widget = $this->context;
 ?>
 <? $form = \yii\widgets\ActiveForm::begin([
-    'method' => 'post',
+    'method' => 'get',
     'action' => "/" . \Yii::$app->request->pathInfo,
     'options' => [
         'data' => [
