@@ -39,7 +39,7 @@ class V3pFeatureValueHandler extends DynamicModel
         return 'fv';
     }
 
-    public $viewFile = 'feature-value';
+    public $viewFile = '@v3p/aff/widgets/filter/views/feature-value';
 
     protected $_features = [];
 
@@ -59,6 +59,11 @@ class V3pFeatureValueHandler extends DynamicModel
         $activeQuery2->select(['fv.feature_id as id']);
         $activeQuery2->distinct(['fv.feature_id' => true]);
         $activeQuery2->andWhere(['fv.feature_type' => 'детальная']);
+        $activeQuery2->andWhere(['fv.feature_value_type' => [
+            V3pFeature::VALUE_TYPE_BOOL,
+            V3pFeature::VALUE_TYPE_LEAF_SOPTION,
+            V3pFeature::VALUE_TYPE_ANY_SOPTION
+        ]]);
         $activeQuery2->orderBy = [];
         $activeQuery2->groupBy = [];
         $activeQuery2->with = [];
