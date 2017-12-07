@@ -39,7 +39,7 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
     {
         parent::init();
 
-        $this->name = 'Фильтрация товаров V3Project';
+        $this->name = 'Концепт V3Project';
     }
 
     public function rules()

@@ -8,24 +8,49 @@
 
 namespace v3p\aff;
 
+use skeeks\cms\backend\BackendComponent;
 use skeeks\cms\base\Component;
 use skeeks\cms\models\CmsContent;
 use skeeks\widget\chosen\Chosen;
+use yii\base\BootstrapInterface;
+use yii\base\Event;
 use yii\base\Module;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\web\Application;
 use yii\widgets\ActiveForm;
 
 /**
  * Class V3pComponent
  * @package v3p\aff
  */
-class V3pComponent extends Component
+class V3pComponent extends Component implements BootstrapInterface
 {
     public $key;
 
     public $cms_content_id;
+
+    /**
+     * @param \yii\base\Application $application
+     */
+    public function bootstrap($application)
+    {
+        if ($application instanceof Application) {
+
+            Event::on(BackendComponent::class, BackendComponent::EVENT_BEFORE_RUN, function($e) {
+
+                \Yii::$app->on(Application::EVENT_BEFORE_ACTION, function($e) {
+
+                    /*$actions = \Yii::$app->controller->actions;
+
+                    $actions[''] =*/
+
+                });
+
+            });
+        }
+    }
 
     /**
      * @return array
@@ -68,10 +93,10 @@ class V3pComponent extends Component
     public function renderConfigForm(ActiveForm $form)
     {
         echo $form->fieldSet('Общие настройки');
-            echo $form->field($this, 'key');
-            echo $form->field($this, 'cms_content_id')->widget(Chosen::className(), [
-                'items' => CmsContent::getDataForSelect(),
-            ]);
+        echo $form->field($this, 'key');
+        echo $form->field($this, 'cms_content_id')->widget(Chosen::className(), [
+            'items' => CmsContent::getDataForSelect(),
+        ]);
         echo $form->fieldSetEnd();
     }
 }

@@ -6,9 +6,9 @@
  * @date 06.11.2017
  */
 $config = [
-    'components'    =>
-    [
-        
+
+    'components' => [
+
     ],
 ];
 

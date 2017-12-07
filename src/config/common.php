@@ -6,6 +6,8 @@
  * @date 06.11.2017
  */
 $config = [
+    'bootstrap' => ['v3p'],
+
     'components' => [
 
         'v3p' => [
@@ -49,18 +51,18 @@ $config = [
 
         'savedFilters' => [
             'class' => 'skeeks\cms\savedFilters\SavedFiltersComponent',
-            'handlers'     =>
-            [
-                'v3p\aff\savedFilters\V3pSavedFiltersHandler' =>
+            'handlers' =>
                 [
-                    'class' => 'v3p\aff\savedFilters\V3pSavedFiltersHandler'
-                ],
+                    'v3p\aff\savedFilters\V3pSavedFiltersHandler' =>
+                        [
+                            'class' => 'v3p\aff\savedFilters\V3pSavedFiltersHandler'
+                        ],
 
-                'v3p\aff\savedFilters\V3pConceptSavedFiltersHandler' =>
-                [
-                    'class' => 'v3p\aff\savedFilters\V3pConceptSavedFiltersHandler'
+                    'v3p\aff\savedFilters\V3pConceptSavedFiltersHandler' =>
+                        [
+                            'class' => 'v3p\aff\savedFilters\V3pConceptSavedFiltersHandler'
+                        ]
                 ]
-            ]
         ],
 
     ],
