@@ -11,6 +11,8 @@ namespace v3p\aff\models;
 
 use Yii;
 use yii\db\ActiveQuery;
+use yii\helpers\ArrayHelper;
+use paulzi\autotree\AutoTreeTrait;
 
 /**
  * This is the model class for table "v3p_ft_soption".
@@ -36,9 +38,36 @@ use yii\db\ActiveQuery;
  */
 class V3pFtSoption extends \yii\db\ActiveRecord
 {
-    public static function primaryKey() {
-        return ['id'];
-    }
+    use AutoTreeTrait;
+
+    /*public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+
+        return ArrayHelper::merge(parent::behaviors(), [
+
+            [
+                'class' => AdjacencyListBehavior::className(),
+                'parentAttribute' => 'pid',
+                'sortable' => [
+                    'sortAttribute' => 'priority'
+                ],
+                /*'parentsJoinLevels'  => 0,
+                'childrenJoinLevels' => 0,
+                'sortable'           => false,
+            ],
+
+            [
+                'class' => MaterializedPathBehavior::className(),
+                'pathAttribute' => 'pids',
+                'depthAttribute' => 'level',
+                'sortable' => [
+                    'sortAttribute' => 'priority'
+                ],
+            ],
+        ]);
+    }*/
+
 
     /**
      * @inheritdoc

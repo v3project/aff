@@ -36,10 +36,6 @@ use yii\db\ActiveRecord;
  */
 class V3pProduct extends ActiveRecord
 {
-    public static function primaryKey() {
-        return ['id'];
-    }
-
     /**
      * @inheritdoc
      */

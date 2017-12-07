@@ -50,10 +50,6 @@ use yii\helpers\Json;
  */
 class V3pProductFeatureValue extends ActiveRecord
 {
-    public static function primaryKey() {
-        return ['id'];
-    }
-
     /**
      * @inheritdoc
      */

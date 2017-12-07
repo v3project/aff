@@ -36,9 +36,8 @@ use yii\db\ActiveRecord;
  */
 class V3pFeature extends ActiveRecord
 {
-    public static function primaryKey() {
-        return ['id'];
-    }
+    const ID_CATEGORY = 1;
+    const ID_BRAND = 2;
 
     const VALUE_TYPE_LEAF_SOPTION = 'leaf_soption';
     const VALUE_TYPE_ANY_SOPTION = 'any_soption';

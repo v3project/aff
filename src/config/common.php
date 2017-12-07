@@ -38,8 +38,31 @@ $config = [
                     'name' => 'Синхронизация данных товаров V3Project',
                     'interval' => 3600 * 2,
                 ],
+
+                'v3p/sync/concepts' => [
+                    'class' => \skeeks\cms\agent\CmsAgent::class,
+                    'name' => 'Синхронизация концептов V3Project',
+                    'interval' => 1800,
+                ],
             ],
         ],
+
+        'savedFilters' => [
+            'class' => 'skeeks\cms\savedFilters\SavedFiltersComponent',
+            'handlers'     =>
+            [
+                'v3p\aff\savedFilters\V3pSavedFiltersHandler' =>
+                [
+                    'class' => 'v3p\aff\savedFilters\V3pSavedFiltersHandler'
+                ],
+
+                'v3p\aff\savedFilters\V3pConceptSavedFiltersHandler' =>
+                [
+                    'class' => 'v3p\aff\savedFilters\V3pConceptSavedFiltersHandler'
+                ]
+            ]
+        ],
+
     ],
 
     'modules' => [

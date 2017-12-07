@@ -8,6 +8,7 @@
 
 namespace v3p\aff\console\controllers;
 
+use v3p\aff\models\V3pConcept;
 use v3p\aff\models\V3pContentElement;
 use v3p\aff\models\V3pFeature;
 use v3p\aff\models\V3pFeatureValue;
@@ -63,6 +64,7 @@ class SyncController extends Controller
         $this->stdout("Синхронизация значений характеристик\n", Console::BOLD);
         $this->_syncTable('product_feature_value', V3pProductFeatureValue::class, $isAll);
     }
+
     /**
      * Синхронизация характеристик
      * Учитывается время последнего обновления
@@ -71,6 +73,16 @@ class SyncController extends Controller
     {
         $this->stdout("Синхронизация товаров\n", Console::BOLD);
         $this->_syncTable('product', V3pProduct::class, $isAll);
+    }
+
+    /**
+     * Синхронизация характеристик
+     * Учитывается время последнего обновления
+     */
+    public function actionConcepts($isAll = 0)
+    {
+        $this->stdout("Синхронизация концептов\n", Console::BOLD);
+        $this->_syncTable('concept', V3pConcept::class, $isAll);
     }
 
 
