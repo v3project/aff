@@ -11,6 +11,7 @@ namespace v3p\aff\models;
 use skeeks\cms\savedFilters\models\SavedFilters;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\Json;
 
 /**
  * This is the model class for table "v3p_concept".
@@ -36,6 +37,9 @@ use yii\db\ActiveRecord;
  * @property string $filter_values_jsonarrayed
  * @property integer $saved_filter_id
  *
+ * ***
+ *
+ * @property array $filter_values
  * @property SavedFilters $savedFilter
  * @property V3pFtSoption $baseCategory
  * @property V3pFtSoption $baseBrand
@@ -113,5 +117,16 @@ class V3pConcept extends ActiveRecord
      */
     public function getBaseCategory() {
         return $this->hasOne(V3pFtSoption::class, ['id' => 'base_category_id']);
+    }
+
+    /**
+     * @return array
+     */
+    public function getFilter_values() {
+        if ($this->filter_values_jsonarrayed) {
+            return (array) Json::decode($this->filter_values_jsonarrayed);
+        }
+
+        return [];
     }
 }

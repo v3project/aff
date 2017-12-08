@@ -76,7 +76,9 @@ class V3pFeatureValueHandler extends DynamicModel
 
 
         if ($this->_feature_ids) {
-            $query = V3pFeature::find();
+            $query = V3pFeature::find()->orderBy([
+                'priority' => SORT_ASC
+            ]);
             $query->andWhere([
                 'id' => $this->_feature_ids
             ]);

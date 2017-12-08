@@ -20,6 +20,8 @@ use v3p\aff\models\V3pConcept;
 use v3p\aff\models\V3pFeature;
 use v3p\aff\models\V3pFtSoption;
 use v3p\aff\models\V3pProductFeatureValue;
+use v3p\aff\widgets\filter\V3pFeatureValueHandler;
+use v3p\aff\widgets\filter\V3pProductFiterWidget;
 use yii\base\Exception;
 use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
@@ -202,6 +204,28 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
                 ]);
             }
 
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param V3pFeatureValueHandler $v3pFeatureValueHandler
+     * @return $this
+     */
+    public function loadToV3pFilterHandler(V3pFeatureValueHandler $v3pFeatureValueHandler) {
+        if ($this->v3pConcept && $this->v3pConcept->filter_values) {
+            foreach ($this->v3pConcept->filter_values as $row) {
+                $featureId = ArrayHelper::getValue($row, 'feature_id');
+                $attribute = $v3pFeatureValueHandler->getAttributeName($featureId);
+
+                if (in_array(ArrayHelper::getValue($row, 'feature_value_type'), [V3pFeature::VALUE_TYPE_ANY_SOPTION, V3pFeature::VALUE_TYPE_LEAF_SOPTION])) {
+                    /*print_r($attribute);
+                    print_r($row);
+                    die;*/
+                    $v3pFeatureValueHandler->{$attribute} = [ArrayHelper::getValue($row, 'ft_soption_id')];
+                }
+            }
         }
 
         return $this;
