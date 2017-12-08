@@ -129,4 +129,54 @@ class V3pConcept extends ActiveRecord
 
         return [];
     }
+
+
+
+    public function appendBreadcrumbs()
+    {
+        if (!$this->savedFilter) {
+            return $this;
+        }
+
+        if ($tree = $this->savedFilter->cmsTree) {
+            \Yii::$app->breadcrumbs->setPartsByTree($tree);
+            return $this;
+        }
+        //Выбраны значения и это не базовый концепт
+        if ($this->filter_values) {
+            //Поиск базового концепта
+            $v3pConcept = V3pConcept::find()->where(['base_category_id' => $this->base_category_id])->andWhere(['filter_values_jsonarrayed' => null])->one();
+            if ($v3pConcept)
+            {
+                $v3pConcept->appendBreadcrumbs();
+            }
+        } else {
+            if ($this->baseCategory) {
+
+                $parents = $this->baseCategory->parents;
+
+                foreach ($parents as $tree) {
+                    \Yii::$app->breadcrumbs->append([
+                        'name' => $tree->title,
+                    ]);
+                }
+            }
+        }
+
+        \Yii::$app->breadcrumbs->append([
+            'name' => $this->title,
+            'url' => $this->url,
+        ]);
+
+
+        return $this;
+    }
+
+    public function getUrl() {
+        if ($this->savedFilter) {
+            return $this->savedFilter->url;
+        }
+
+        return '';
+    }
 }

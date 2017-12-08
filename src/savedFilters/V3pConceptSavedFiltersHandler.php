@@ -193,17 +193,8 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
 
     public function appendBreadcrumbs()
     {
-        if ($this->v3pConcept && $this->v3pConcept->baseCategory) {
-
-            $parents = $this->v3pConcept->baseCategory->parents;
-            $parents[] = $this->v3pConcept->baseCategory;
-
-            foreach ($parents as $tree) {
-                \Yii::$app->breadcrumbs->append([
-                    'name' => $tree->title,
-                ]);
-            }
-
+        if ($this->v3pConcept) {
+            $this->v3pConcept->appendBreadcrumbs();
         }
 
         return $this;
