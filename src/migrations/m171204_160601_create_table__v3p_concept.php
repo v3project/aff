@@ -55,6 +55,7 @@ class m171204_160601_create_table__v3p_concept extends Migration
 
             'saved_filter_id' => $this->integer(),
 
+            'state' => $this->string(255),
             'filter_values_jsonarrayed' => $this->text(),
 
         ], $tableOptions);

@@ -32,6 +32,7 @@ use yii\db\ActiveRecord;
  * @property string $sorting
  * @property string $sorting_direction
  * @property string $slug
+ * @property string $state
  * @property string $filter_values_jsonarrayed
  * @property integer $saved_filter_id
  *
@@ -55,8 +56,8 @@ class V3pConcept extends ActiveRecord
         return [
             [['created_at', 'updated_at'], 'safe'],
             [['queries', 'description', 'filter_values_jsonarrayed'], 'string'],
-            [['base_brand_id', 'base_category_id', 'per_page', 'page', 'saved_filter_id'], 'integer'],
-            [['title', 'meta_title', 'meta_keywords', 'meta_description', 'keywords', 'sorting', 'sorting_direction', 'slug'], 'string', 'max' => 255],
+            [['id', 'base_brand_id', 'base_category_id', 'per_page', 'page', 'saved_filter_id'], 'integer'],
+            [['title', 'meta_title', 'meta_keywords', 'meta_description', 'keywords', 'sorting', 'sorting_direction', 'slug', 'state'], 'string', 'max' => 255],
             [['saved_filter_id'], 'unique'],
             [['saved_filter_id'], 'exist', 'skipOnError' => true, 'targetClass' => SavedFilters::className(), 'targetAttribute' => ['saved_filter_id' => 'id']],
         ];
@@ -87,6 +88,7 @@ class V3pConcept extends ActiveRecord
             'slug' => 'Slug',
             'saved_filter_id' => 'Saved Filter ID',
             'filter_values_jsonarrayed' => 'Saved Filter ID',
+            'state' => 'Saved Filter ID',
         ];
     }
 
