@@ -46,6 +46,12 @@ $config = [
                     'name' => 'Синхронизация концептов V3Project',
                     'interval' => 1800,
                 ],
+
+                'v3p/concept/create-saved-filters' => [
+                    'class' => \skeeks\cms\agent\CmsAgent::class,
+                    'name' => 'Создание сохраненных фильтров по концптам V3Project',
+                    'interval' => 1800,
+                ],
             ],
         ],
 
