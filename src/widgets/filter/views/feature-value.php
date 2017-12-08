@@ -92,16 +92,66 @@ JS
 
         <? if ($options = $handler->getOptions($feature->id)) : ?>
             <? if (count($options) > 1) : ?>
-                <div class="sx-product-filter-wrapper">
-                    <div class="row">
-                        <!--<label><? /*= $feature->title; */ ?></label>-->
-                        <div class="col-md-12">
-                            <?= $form->field($handler, $handler->getAttributeName($feature->id))->checkboxList(
-                                $options, ['class' => 'sx-product-filter-checkbox-wrapper']
-                            ); ?>
-                        </div>
-                    </div>
+
+                <?
+                    $code = $handler->getAttributeName($feature->id);
+                    $values = $handler->{$code};
+                    $class = '';
+                    $classCollapsed = 'collapsed';
+                    $classCollapsedIn = '';
+                    if ($values) {
+                        $class = 'opened sx-filter-selected';
+                        $classCollapsed = '';
+                        $classCollapsedIn = 'in';
+                    }
+
+                    $info = '';
+                    if ($feature->buyer_description) {
+                        $info = "<i class='fa fa-question' title='{$feature->buyer_description}'></i>";
+                    }
+                ?>
+
+            <div class="panel panel-default <?= $class; ?>">
+                <div class="panel-heading" role="tab" id="heading<?= $feature->id; ?>">
+                  <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse<?= $feature->id; ?>" aria-expanded="true" aria-controls="collapse<?= $feature->id; ?>" class="<?= $classCollapsed; ?>">
+                      <?= $feature->title; ?>
+                    </a>
+                  </h4>
                 </div>
+                <div id="collapse<?= $feature->id; ?>" class="panel-collapse collapse <?= $classCollapsedIn; ?>" role="tabpanel" aria-labelledby="heading<?= $feature->id; ?>">
+                  <div class="panel-body">
+
+                      <?= $form->field($handler, $code, [
+                            'options'      => [
+                                'class' => 'filter--group ' . $class,
+                                'tag' => 'section'
+                            ],
+                        ])->label(false)->checkboxList(
+                            $options
+                            , [
+                        'class' => 'sx-filters-checkbox-options filter--group--inner',
+                        'item' => function ($index, $label, $name, $checked, $value) use ($feature)
+                        {
+                            $input = \yii\helpers\Html::checkbox($name, $checked, [
+                                'id' => 'filter-check-' .  $feature->id . "-" . $index,
+                                'value' => $value
+                            ]);
+                            return <<<HTML
+    <div class="checkbox">
+    {$input}
+    <label for="filter-check-{$feature->id}-{$index}">{$label}</label>
+    </div>
+HTML;
+
+                        }
+                    ]); ?>
+
+                  </div>
+                </div>
+            </div>
+
+
             <? endif; ?>
         <? endif; ?>
     <? elseif ($feature && in_array($feature->value_type, ['bool'])) : ?>
@@ -109,23 +159,76 @@ JS
         <? if ($feature->bool_type == 'yes') : ?>
             <div class="sx-product-filter-wrapper">
                 <div class="row">
-                    <!--<div class="col-md-12">
-                        <label><?/*= $handler->getAttributeLabel($code); */?></label>
-                    </div>-->
-                    <!--<label><? /*= $feature->title; */ ?></label>-->
                     <div class="col-md-12">
                         <?= $form->field($handler, $handler->getAttributeName($feature->id))->checkbox(); ?>
                     </div>
                 </div>
             </div>
         <? else : ?>
-            <div class="sx-product-filter-wrapper">
-                <div class="row">
-                    <div class="col-md-12">
-                        <?= $form->field($handler, $handler->getAttributeName($feature->id))->checkboxList(\Yii::$app->formatter->booleanFormat); ?>
-                    </div>
+
+            <?
+                $code = $handler->getAttributeName($feature->id);
+                $values = $handler->{$code};
+                $class = '';
+                $classCollapsed = 'collapsed';
+                $classCollapsedIn = '';
+                if ($values) {
+                    $class = 'opened sx-filter-selected';
+                    $classCollapsed = '';
+                    $classCollapsedIn = 'in';
+                }
+
+                $info = '';
+                if ($feature->buyer_description) {
+                    $info = "<i class='fa fa-question' title='{$feature->buyer_description}'></i>";
+                }
+            ?>
+
+
+
+
+            <div class="panel panel-default <?= $class; ?>">
+                <div class="panel-heading" role="tab" id="heading<?= $feature->id; ?>">
+                  <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse<?= $feature->id; ?>" aria-expanded="true" aria-controls="collapse<?= $feature->id; ?>" class="<?= $classCollapsed; ?>">
+                      <?= $feature->title; ?>
+                    </a>
+                  </h4>
+                </div>
+                <div id="collapse<?= $feature->id; ?>" class="panel-collapse collapse <?= $classCollapsedIn; ?>" role="tabpanel" aria-labelledby="heading<?= $feature->id; ?>">
+                  <div class="panel-body">
+
+                      <?= $form->field($handler, $code, [
+                            'options'      => [
+                                'class' => 'filter--group ' . $class,
+                                'tag' => 'section'
+                            ],
+                        ])->label(false)->checkboxList(
+                            \Yii::$app->formatter->booleanFormat
+                            , [
+                        'class' => 'sx-filters-checkbox-options filter--group--inner',
+                        'item' => function ($index, $label, $name, $checked, $value) use ($feature)
+                        {
+                            $input = \yii\helpers\Html::checkbox($name, $checked, [
+                                'id' => 'filter-check-' .  $feature->id . "-" . $index,
+                                'value' => $value
+                            ]);
+                            return <<<HTML
+    <div class="checkbox">
+    {$input}
+    <label for="filter-check-{$feature->id}-{$index}">{$label}</label>
+    </div>
+HTML;
+
+                        }
+                    ]); ?>
+
+                  </div>
                 </div>
             </div>
+
+
+
         <? endif; ?>
     <? endif; ?>
 

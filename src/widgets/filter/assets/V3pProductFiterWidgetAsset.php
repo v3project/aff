@@ -25,5 +25,6 @@ class V3pProductFiterWidgetAsset extends AssetBundle
     public $depends = [
         'yii\web\YiiAsset',
         'skeeks\sx\assets\Custom',
+        'yii\bootstrap\BootstrapPluginAsset',
     ];
 }

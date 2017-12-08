@@ -36,3 +36,26 @@
     max-height: 150px;
     overflow-x: auto;
 }
+
+
+#sx-filters-form {
+    display: none;
+}
+
+.sx-filter-selected {
+    background: #ffe5d9;
+    box-shadow: 0 1px 1px #ffe5d9;
+}
+
+
+.sx-filter-option-hidden {
+    display: none;
+}
+.sx-filter-option-hidden.sx-filter-option-visible {
+    display: block;
+}
+
+.sx-product-filters .checkbox input[type=checkbox]{
+    margin-left: 0px;
+    margin-top: 2px;
+}
