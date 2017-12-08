@@ -60,7 +60,8 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
     /**
      * @return V3pConcept
      */
-    public function getV3pConcept() {
+    public function getV3pConcept()
+    {
         return V3pConcept::findOne($this->v3p_concept_id);
     }
 
@@ -82,13 +83,13 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
     }
 
 
-
     /**
      * @param ActiveQuery $activeQuery
      * @return $this
      * @throws Exception
      */
-    public function filterElementsQuery(ActiveQuery $activeQuery) {
+    public function filterElementsQuery(ActiveQuery $activeQuery)
+    {
 
         $unionQueries = [];
         $v3pConcept = $this->v3pConcept;
@@ -107,10 +108,14 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
                 ->select(['id'])
                 ->where(['feature_id' => 1])
                 ->andWhere([
-                    '>=', 'lft', $ft_soption->lft
+                    '>=',
+                    'lft',
+                    $ft_soption->lft
                 ])
                 ->andWhere([
-                    '<=', 'rgt', $ft_soption->rgt
+                    '<=',
+                    'rgt',
+                    $ft_soption->rgt
                 ]);
 
             $unionQueries[] = V3pProductFeatureValue::find()->select(['product_id as id'])->where([
@@ -132,10 +137,14 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
                 ->select(['id'])
                 ->where(['feature_id' => 2])
                 ->andWhere([
-                    '>=', 'lft', $ft_soption->lft
+                    '>=',
+                    'lft',
+                    $ft_soption->lft
                 ])
                 ->andWhere([
-                    '<=', 'rgt', $ft_soption->rgt
+                    '<=',
+                    'rgt',
+                    $ft_soption->rgt
                 ]);
 
             $unionQueries[] = V3pProductFeatureValue::find()->select(['product_id as id'])->where([
@@ -178,4 +187,24 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
 
         return $this;
     }
+
+
+    public function appendBreadcrumbs()
+    {
+        if ($this->v3pConcept && $this->v3pConcept->baseCategory) {
+
+            $parents = $this->v3pConcept->baseCategory->parents;
+            $parents[] = $this->v3pConcept->baseCategory;
+
+            foreach ($parents as $tree) {
+                \Yii::$app->breadcrumbs->append([
+                    'name' => $tree->title,
+                ]);
+            }
+
+        }
+
+        return $this;
+    }
+
 }

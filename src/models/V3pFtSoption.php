@@ -9,6 +9,7 @@
 namespace v3p\aff\models;
 
 
+use paulzi\adjacencyList\AdjacencyListBehavior;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
@@ -40,7 +41,7 @@ class V3pFtSoption extends \yii\db\ActiveRecord
 {
     use AutoTreeTrait;
 
-    /*public function behaviors()
+    public function behaviors()
     {
         $behaviors = parent::behaviors();
 
@@ -48,25 +49,13 @@ class V3pFtSoption extends \yii\db\ActiveRecord
 
             [
                 'class' => AdjacencyListBehavior::className(),
-                'parentAttribute' => 'pid',
-                'sortable' => [
-                    'sortAttribute' => 'priority'
-                ],
-                /*'parentsJoinLevels'  => 0,
+                'parentAttribute' => 'parent_id',
+                'parentsJoinLevels'  => 0,
                 'childrenJoinLevels' => 0,
                 'sortable'           => false,
             ],
-
-            [
-                'class' => MaterializedPathBehavior::className(),
-                'pathAttribute' => 'pids',
-                'depthAttribute' => 'level',
-                'sortable' => [
-                    'sortAttribute' => 'priority'
-                ],
-            ],
         ]);
-    }*/
+    }
 
 
     /**

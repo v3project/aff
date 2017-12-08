@@ -37,6 +37,8 @@ use yii\db\ActiveRecord;
  * @property integer $saved_filter_id
  *
  * @property SavedFilters $savedFilter
+ * @property V3pFtSoption $baseCategory
+ * @property V3pFtSoption $baseBrand
  */
 class V3pConcept extends ActiveRecord
 {
@@ -98,5 +100,18 @@ class V3pConcept extends ActiveRecord
     public function getSavedFilter()
     {
         return $this->hasOne(SavedFilters::className(), ['id' => 'saved_filter_id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getBaseBrand() {
+        return $this->hasOne(V3pFtSoption::class, ['id' => 'base_brand_id']);
+    }
+    /**
+     * @return ActiveQuery
+     */
+    public function getBaseCategory() {
+        return $this->hasOne(V3pFtSoption::class, ['id' => 'base_category_id']);
     }
 }
