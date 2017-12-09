@@ -19,6 +19,7 @@ use v3p\aff\models\V3pProductFeatureValue;
 use v3project\yii2\productfilter\EavFiltersHandler;
 use v3project\yii2\productfilter\IFiltersHandler;
 use yii\base\DynamicModel;
+use yii\base\InvalidConfigException;
 use yii\data\DataProviderInterface;
 use yii\db\ActiveQuery;
 use yii\db\ActiveQueryInterface;
@@ -27,6 +28,9 @@ use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 
 /**
+ * @property ActiveQuery $baseQuery
+ * @property ActiveQuery|int[] $elements
+ *
  * Class V3pProductFeatureValueHandler
  * @package v3p\aff\widgets\filter
  */
@@ -46,34 +50,51 @@ class V3pFeatureValueHandler extends DynamicModel
     protected $_feature_values_data = [];
     protected $_feature_ids = [];
     protected $_ft_soptions_data = [];
-    protected $ids_query = null;
 
-    public function smartInit(ActiveQuery $baseQuery)
+    /**
+     * @var ActiveQuery
+     */
+    protected $_baseQuery;
+
+    public function init()
     {
-        $activeQuery = clone $baseQuery;
-        $activeQuery2 = clone $baseQuery;
 
+        parent::init();
 
-        //$activeQuery->joinWith(['v3toysProductProperty as v3property']);
-        $activeQuery2->joinWith(['v3toysProductProperty.productFeatureValues as fv']);
-        $activeQuery2->select(['fv.feature_id as id']);
-        $activeQuery2->distinct(['fv.feature_id' => true]);
+        if (!$this->baseQuery) {
+            throw new InvalidConfigException('Не указан базовый запрос');
+        }
+    }
+
+    public function getFeatureIdsQuery()
+    {
+        $activeQuery = clone $this->baseQuery;
+
+        $activeQuery->joinWith(['v3toysProductProperty.productFeatureValues as fv']);
+        $activeQuery->select(['fv.feature_id as id']);
+        $activeQuery->distinct(['fv.feature_id' => true]);
         //$activeQuery2->andWhere(['fv.feature_type' => 'детальная']);
-        $activeQuery2->andWhere(['fv.feature_value_type' => [
-            V3pFeature::VALUE_TYPE_BOOL,
-            V3pFeature::VALUE_TYPE_LEAF_SOPTION,
-            V3pFeature::VALUE_TYPE_ANY_SOPTION
-        ]]);
-        $activeQuery2->orderBy = [];
-        $activeQuery2->groupBy = [];
-        $activeQuery2->with = [];
+        /*$activeQuery->andWhere([
+            'fv.feature_value_type' => [
+                V3pFeature::VALUE_TYPE_BOOL,
+                V3pFeature::VALUE_TYPE_LEAF_SOPTION,
+                V3pFeature::VALUE_TYPE_ANY_SOPTION
+            ]
+        ]);*/
+        $activeQuery->orderBy = [];
+        $activeQuery->groupBy = [];
+        $activeQuery->with = [];
 
-        $this->_feature_ids = $activeQuery2->asArray()->all();
+        return $activeQuery;
+    }
+
+    public function initFeaturesByIdsQuery(ActiveQuery $featureIdsQuery)
+    {
+        $this->_feature_ids = $featureIdsQuery->asArray()->all();
 
         if ($this->_feature_ids) {
             $this->_feature_ids = ArrayHelper::map($this->_feature_ids, 'id', 'id');
         }
-
 
         if ($this->_feature_ids) {
             $query = V3pFeature::find()->orderBy([
@@ -82,32 +103,75 @@ class V3pFeatureValueHandler extends DynamicModel
             $query->andWhere([
                 'id' => $this->_feature_ids
             ]);
-            /**
-             * @var V3pFeature $feature
-             */
-            if ($features = $query->all()) {
-                foreach ($features as $feature) {
-                    $this->_featureInit($feature);
-                }
-            }
+            $this->initFeatures($query->all());
         } else {
             return false;
         }
 
+        return $this;
+    }
 
 
-        $activeQuery->joinWith(['v3toysProductProperty as v3property']);
-        $activeQuery->select(['v3property.v3toys_id as id']);
-        $activeQuery->orderBy = [];
-        $activeQuery->groupBy = [];
-        $activeQuery->with = [];
-
-        $this->ids_query = $activeQuery->asArray()->all();
-        if ($this->ids_query) {
-            $this->ids_query = ArrayHelper::map($this->ids_query, 'id', 'id');
+    /**
+     * @param array $features
+     * @return $this
+     */
+    public function initFeatures($features = [])
+    {
+        if ($features) {
+            foreach ($features as $feature) {
+                $this->_featureInit($feature);
+            }
         }
 
         return $this;
+    }
+
+    protected $_elements = null;
+
+    /**
+     * @return array|null|\yii\db\ActiveRecord[]
+     */
+    public function getElements()
+    {
+
+        if ($this->_elements === null) {
+            $activeQuery = clone $this->baseQuery;
+
+            $activeQuery->joinWith(['v3toysProductProperty as v3property']);
+            $activeQuery->select(['v3property.v3toys_id as id']);
+            $activeQuery->orderBy = [];
+            $activeQuery->groupBy = [];
+            $activeQuery->with = [];
+            //echo $activeQuery->count();die;
+
+            $this->_elements = $activeQuery;
+
+            /*$this->_elements = $activeQuery->asArray()->all();
+            if ($this->_elements) {
+                $this->_elements = ArrayHelper::map($this->_elements, 'id', 'id');
+            }*/
+        }
+
+        return $this->_elements;
+    }
+
+    /**
+     * @param QueryInterface $baseQuery
+     * @return $this
+     */
+    public function setBaseQuery(QueryInterface $baseQuery)
+    {
+        $this->_baseQuery = clone $baseQuery;
+        return $this;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getBaseQuery()
+    {
+        return $this->_baseQuery;
     }
 
     public function initAll()
@@ -186,7 +250,7 @@ class V3pFeatureValueHandler extends DynamicModel
     {
         $this->_ft_soptions_data = V3pFtSoption::find()->joinWith('featureValues as fv')
             ->andWhere(['fv.feature_id' => $feature_id])
-            ->andWhere(["fv.product_id" => $this->ids_query])
+            ->andWhere(["fv.product_id" => $this->elements])
             ->all();
 
         if ($this->_ft_soptions_data) {
@@ -200,7 +264,8 @@ class V3pFeatureValueHandler extends DynamicModel
         return [];
     }
 
-    public function getSelected() {
+    public function getSelected()
+    {
         $result = [];
 
         if ($this->toArray()) {
@@ -250,7 +315,7 @@ class V3pFeatureValueHandler extends DynamicModel
             $valueFromDb = V3pProductFeatureValue::find()
                 ->select(["max(ft_int_value) as value, max(ft_int_value2) as value2"])
                 ->andWhere(['feature_id' => $feature->id])
-                ->andWhere(["product_id" => $this->ids_query])
+                ->andWhere(["product_id" => $this->elements])
                 ->andWhere([
                     'or',
                     ['is not', 'ft_int_value', null],
@@ -274,7 +339,7 @@ class V3pFeatureValueHandler extends DynamicModel
             $valueFromDb = V3pProductFeatureValue::find()
                 ->select(["max(ft_num_value) as value, max(ft_num_value2) as value2"])
                 ->andWhere(['feature_id' => $feature->id])
-                ->andWhere(["product_id" => $this->ids_query])
+                ->andWhere(["product_id" => $this->elements])
                 ->andWhere([
                     'or',
                     ['is not', 'ft_num_value', null],
@@ -308,7 +373,7 @@ class V3pFeatureValueHandler extends DynamicModel
             $valueFromDb = V3pProductFeatureValue::find()
                 ->select(["min(ft_int_value) as value, min(ft_int_value2) as value2"])
                 ->andWhere(['feature_id' => $feature->id])
-                ->andWhere(["product_id" => $this->ids_query])
+                ->andWhere(["product_id" => $this->elements])
                 ->andWhere([
                     'or',
                     ['is not', 'ft_int_value', null],
@@ -334,7 +399,7 @@ class V3pFeatureValueHandler extends DynamicModel
             $valueFromDb = V3pProductFeatureValue::find()
                 ->select(["min(ft_num_value) as value, min(ft_num_value2) as value2"])
                 ->andWhere(['feature_id' => $feature->id])
-                ->andWhere(["product_id" => $this->ids_query])
+                ->andWhere(["product_id" => $this->elements])
                 ->andWhere([
                     'or',
                     ['is not', 'ft_num_value', null],

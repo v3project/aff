@@ -214,7 +214,13 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
                     /*print_r($attribute);
                     print_r($row);
                     die;*/
-                    $v3pFeatureValueHandler->{$attribute} = [ArrayHelper::getValue($row, 'ft_soption_id')];
+                    if (isset($v3pFeatureValueHandler->{$attribute})) {
+                         $v3pFeatureValueHandler->{$attribute} = [ArrayHelper::getValue($row, 'ft_soption_id')];
+                    } else
+                    {
+                        //TODO: варнинг
+                    }
+
                 }
             }
         }
