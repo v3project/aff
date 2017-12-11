@@ -246,23 +246,50 @@ class V3pFeatureValueHandler extends DynamicModel
     }
 
     /**
-     * @param $feature_id
+     * @param V3pFeature $feature
      * @return array
      */
-    public function getOptions($feature_id)
+    public function getOptions(V3pFeature $feature)
     {
-        $this->_ft_soptions_data = V3pFtSoption::find()->joinWith('featureValues as fv')
-            ->andWhere(['fv.feature_id' => $feature_id])
-            ->andWhere(["fv.product_id" => $this->elements])
-            ->all();
+        $feature_id = $feature->id;
 
-        if ($this->_ft_soptions_data) {
-            return ArrayHelper::map(
-                $this->_ft_soptions_data,
-                'id',
-                'title'
-            );
+        if (in_array($feature->value_type, [V3pFeature::VALUE_TYPE_ANY_SOPTION, V3pFeature::VALUE_TYPE_LEAF_SOPTION])) {
+            $this->_ft_soptions_data = V3pFtSoption::find()->joinWith('featureValues as fv')
+                ->andWhere(['fv.feature_id' => $feature_id])
+                ->andWhere(["fv.product_id" => $this->elements])
+                ->all();
+
+            if ($this->_ft_soptions_data) {
+                return ArrayHelper::map(
+                    $this->_ft_soptions_data,
+                    'id',
+                    'title'
+                );
+            }
+        } else if (in_array($feature->value_type, [V3pFeature::VALUE_TYPE_BOOL])) {
+            $this->_ft_soptions_data = V3pProductFeatureValue::find()
+                ->andWhere(['feature_id' => $feature_id])
+                ->andWhere(["product_id" => $this->elements])
+                ->distinct(true)
+                ->select(['ft_bool_value'])
+                ->all();
+
+            if ($this->_ft_soptions_data) {
+                $result = [];
+                foreach ($this->_ft_soptions_data as $ft_bool_value => $ft_bool_value) {
+                    if ($ft_bool_value == 0) {
+                        $result[0] = 'Нет';
+                    } else if ($ft_bool_value == 1) {
+                        $result[1] = 'Да';
+                    }
+                }
+
+                return $result;
+            }
         }
+
+
+
 
         return [];
     }
