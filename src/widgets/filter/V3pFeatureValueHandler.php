@@ -73,6 +73,7 @@ class V3pFeatureValueHandler extends DynamicModel
         $activeQuery->joinWith(['v3toysProductProperty.productFeatureValues as fv']);
         $activeQuery->select(['fv.feature_id as id']);
         $activeQuery->distinct(['fv.feature_id' => true]);
+        $activeQuery->andWhere(['NOT IN', 'fv.feature_id', V3pFeature::HIDDEN_FEATURE_IDS]);
         //$activeQuery2->andWhere(['fv.feature_type' => 'детальная']);
         /*$activeQuery->andWhere([
             'fv.feature_value_type' => [
@@ -97,7 +98,9 @@ class V3pFeatureValueHandler extends DynamicModel
         }
 
         if ($this->_feature_ids) {
-            $query = V3pFeature::find()->orderBy([
+            $query = V3pFeature::find()
+                ->andWhere(['NOT IN', 'id', V3pFeature::HIDDEN_FEATURE_IDS])
+                ->orderBy([
                 'priority' => SORT_ASC
             ]);
             $query->andWhere([
@@ -264,46 +267,6 @@ class V3pFeatureValueHandler extends DynamicModel
         return [];
     }
 
-    public function getSelected()
-    {
-        $result = [];
-
-        if ($this->toArray()) {
-            foreach ($this->toArray() as $key => $value) {
-                $feature = $this->getFeatureByCode($key);
-                if ($feature && $this->{$key}) {
-
-                    $options = $this->getOptions($feature->id);
-
-                    if (is_array($this->{$key})) {
-                        foreach ($this->{$key} as $id) {
-                            if (in_array($feature->value_type, ['any_soption', 'leaf_soption'])) {
-                                $result[$id] = ArrayHelper::getValue($options, $id, $id);
-                            }
-
-                            if (in_array($feature->value_type, ['int', 'int_range', 'num', 'num_range'])) {
-
-                                $from = $this->getAttributeNameRangeFrom($feature->id);
-                                $to = $this->getAttributeNameRangeFrom($feature->id);
-
-                                $valueFrom = $this->{$from};
-                                $valueTo = $this->{$to};
-
-                                $result[$id] = "от {$valueFrom} до {$valueTo} " . $feature->measure_title;
-                            }
-
-                        }
-
-                    }
-
-                }
-
-            }
-        }
-
-        return $result;
-    }
-
     public function getMaxValue($code)
     {
         $value = 0;
@@ -466,7 +429,14 @@ class V3pFeatureValueHandler extends DynamicModel
         if ($this->toArray()) {
             foreach ($this->toArray() as $key => $value) {
                 $feature = $this->getFeatureByCode($key);
-                if ($feature && $this->{$key}) {
+                if (
+                    ($feature && $this->{$key}) ||
+                    (
+                        $feature
+                        && isset($this->{$this->getAttributeNameRangeFrom($feature->id)}) && $this->{$this->getAttributeNameRangeFrom($feature->id)}
+                        && isset($this->{$this->getAttributeNameRangeTo($feature->id)}) && $this->{$this->getAttributeNameRangeTo($feature->id)})
+                ) {
+
                     $applyFilters = true;
                     $queryPart = V3pProductFeatureValue::find()->andWhere(['feature_id' => $feature->id])->select(['product_id as id']);
 
@@ -477,6 +447,64 @@ class V3pFeatureValueHandler extends DynamicModel
                         if (is_array($this->{$key})) {
                             $queryPart->andWhere(['ft_soption_id' => $this->{$key}]);
                         }
+                    } elseif (in_array($feature->value_type, [
+                        V3pFeature::VALUE_TYPE_INT,
+                    ])) {
+                        $queryPart->andWhere(['>=', 'ft_int_value', (int) $this->{$this->getAttributeNameRangeFrom($feature->id)}]);
+                        $queryPart->andWhere(['<=', 'ft_int_value', (int) $this->{$this->getAttributeNameRangeTo($feature->id)}]);
+                    } elseif (in_array($feature->value_type, [
+                        V3pFeature::VALUE_TYPE_NUM,
+                    ])) {
+                        $queryPart->andWhere(['>=', 'ft_num_value', $this->{$this->getAttributeNameRangeFrom($feature->id)}]);
+                        $queryPart->andWhere(['<=', 'ft_num_value', $this->{$this->getAttributeNameRangeTo($feature->id)}]);
+                    } elseif (in_array($feature->value_type, [
+                        V3pFeature::VALUE_TYPE_INT_RANGE,
+                    ])) {
+                        $queryPart->andWhere([
+                            'or',
+                            [
+                                'and',
+                                [
+                                    '>=', 'fv.ft_int_value', (int) $this->{$this->getAttributeNameRangeFrom($feature->id)}
+                                ],
+                                [
+                                    '<=', 'fv.ft_int_value', (int) $this->{$this->getAttributeNameRangeTo($feature->id)}
+                                ],
+                            ],
+                            [
+                                'and',
+                                [
+                                    '>=', 'fv.ft_int_value2', (int) $this->{$this->getAttributeNameRangeFrom($feature->id)}
+                                ],
+                                [
+                                    '<=', 'fv.ft_int_value2', (int) $this->{$this->getAttributeNameRangeTo($feature->id)}
+                                ],
+                            ]
+                        ]);
+                    } elseif (in_array($feature->value_type, [
+                        V3pFeature::VALUE_TYPE_NUM_RANGE,
+                    ])) {
+                        $queryPart->andWhere([
+                            'or',
+                            [
+                                'and',
+                                [
+                                    '>=', 'fv.ft_num_value', (int) $this->{$this->getAttributeNameRangeFrom($feature->id)}
+                                ],
+                                [
+                                    '<=', 'fv.ft_num_value', (int) $this->{$this->getAttributeNameRangeTo($feature->id)}
+                                ],
+                            ],
+                            [
+                                'and',
+                                [
+                                    '>=', 'fv.ft_num_value2', (int) $this->{$this->getAttributeNameRangeFrom($feature->id)}
+                                ],
+                                [
+                                    '<=', 'fv.ft_num_value2', (int) $this->{$this->getAttributeNameRangeTo($feature->id)}
+                                ],
+                            ]
+                        ]);
                     } elseif (in_array($feature->value_type, [
                         V3pFeature::VALUE_TYPE_BOOL,
                     ])) {
