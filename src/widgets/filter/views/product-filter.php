@@ -37,6 +37,71 @@ new sx.classes.ProductFilters();
 
                 self.JqueryForm.submit();
             });
+            
+            
+            
+            
+            var jSelectedWrapper = $(".sx-filters-selected-wrapper");
+            
+            $("input[type=checkbox]:checked", this.jFilterFormWrapper).each(function() {
+                
+                var jOption = $(this); 
+                var text = $(this).closest('div').find('label').text(); 
+                
+                var jRemoveBtn = $("<i>", {'class' : 'glyphicon glyphicon-remove'});
+                
+                var jBtn = $("<button>", {
+                    'href' : '#', 
+                    'class' : 'btn btn-default btn-sm',
+                    'title' : 'Отменить выбранную опцию',
+                })
+                    .append(text)
+                    .append(" ")
+                    .append(jRemoveBtn)
+                ;
+                
+                jSelectedWrapper.append(jBtn);
+                
+                jRemoveBtn.on('click', function() {
+                    jOption.click(); 
+                    jBtn.fadeOut();
+                    jBtn.remove();
+                    return false;
+                });
+            });
+            
+            $(".sx-filter-selected .range-slider", this.jFilterFormWrapper).each(function() {
+                var From = $(this).data('from');
+                var To = $(this).data('to');
+                var Min = $(this).data('min');
+                var Max = $(this).data('max');
+                
+                
+                var jOption = $(this); 
+                var text = "от " + new Intl.NumberFormat('ru-RU').format(From) + " до " + new Intl.NumberFormat('ru-RU').format(To) + $(this).data('postfix'); 
+                
+                var jRemoveBtn = $("<i>", {'class' : 'glyphicon glyphicon-remove'});
+                
+                var jBtn = $("<button>", {
+                    'href' : '#', 
+                    'class' : 'btn btn-default btn-sm',
+                    'title' : 'Отменить выбранную опцию',
+                })
+                    .append(text)
+                    .append(" ")
+                    .append(jRemoveBtn)
+                ;
+                
+                jSelectedWrapper.append(jBtn);
+                
+                jRemoveBtn.on('click', function() {
+                    jOption.click(); 
+                    jBtn.fadeOut();
+                    jBtn.remove();
+                    return false;
+                });
+                
+            });
         }
     });
 

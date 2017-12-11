@@ -33,15 +33,31 @@ $widget = $this->context;
         $toId = \yii\helpers\Html::getInputId($handler, $handler->getAttributeNameRangeTo($feature->id));
         $id = \yii\helpers\Html::getInputId($handler, $handler->getAttributeName($feature->id));
 
+        $classCollapsed = 'collapsed';
+        $classCollapsedIn = '';
+        $class = '';
+
+        if (($val1 != $min || $val2 != $max)) {
+            $class = "opened sx-filter-selected";
+            $classCollapsed = "";
+            $classCollapsedIn = 'in';
+        }
         ?>
         <? if ($min != $max
             //&& $max > 0
         ) : ?>
-            <div class="sx-product-filter-wrapper">
-                <div class="row">
-                    <div class="col-md-12">
-                        <label><?= $handler->getAttributeLabel($code); ?></label>
-                    </div>
+            <div class="panel panel-default <?= $class; ?>">
+                <div class="panel-heading" role="tab" id="heading<?= $feature->id; ?>">
+                  <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse<?= $feature->id; ?>" aria-expanded="true" aria-controls="collapse<?= $feature->id; ?>" class="<?= $classCollapsed; ?>">
+                      <?= $feature->title; ?>
+                    </a>
+                  </h4>
+                </div>
+                <div id="collapse<?= $feature->id; ?>" class="panel-collapse collapse <?= $classCollapsedIn; ?>" role="tabpanel" aria-labelledby="heading<?= $feature->id; ?>">
+                  <div class="panel-body">
+
+
 
                     <div class="col-md-6">
                         <?= $form->field($handler, $handler->getAttributeNameRangeFrom($feature->id))
@@ -87,10 +103,11 @@ JS
                     </div>
                 </div>
             </div>
+            </div>
         <? endif; ?>
     <? elseif ($feature && in_array($feature->value_type, ['leaf_soption', 'any_soption'])) : ?>
 
-        <? if ($options = $handler->getOptions($feature->id)) : ?>
+        <? if ($options = $handler->getOptions($feature)) : ?>
             <? if (count($options) > 1) : ?>
 
                 <?
@@ -204,7 +221,7 @@ HTML;
                                 'tag' => 'section'
                             ],
                         ])->label(false)->checkboxList(
-                            \Yii::$app->formatter->booleanFormat
+                            $handler->getOptions($feature)
                             , [
                         'class' => 'sx-filters-checkbox-options filter--group--inner',
                         'item' => function ($index, $label, $name, $checked, $value) use ($feature)
