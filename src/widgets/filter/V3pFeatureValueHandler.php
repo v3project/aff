@@ -492,19 +492,19 @@ class V3pFeatureValueHandler extends DynamicModel
                             [
                                 'and',
                                 [
-                                    '>=', 'fv.ft_int_value', (int) $this->{$this->getAttributeNameRangeFrom($feature->id)}
+                                    '>=', 'ft_int_value', (int) $this->{$this->getAttributeNameRangeFrom($feature->id)}
                                 ],
                                 [
-                                    '<=', 'fv.ft_int_value', (int) $this->{$this->getAttributeNameRangeTo($feature->id)}
+                                    '<=', 'ft_int_value', (int) $this->{$this->getAttributeNameRangeTo($feature->id)}
                                 ],
                             ],
                             [
                                 'and',
                                 [
-                                    '>=', 'fv.ft_int_value2', (int) $this->{$this->getAttributeNameRangeFrom($feature->id)}
+                                    '>=', 'ft_int_value2', (int) $this->{$this->getAttributeNameRangeFrom($feature->id)}
                                 ],
                                 [
-                                    '<=', 'fv.ft_int_value2', (int) $this->{$this->getAttributeNameRangeTo($feature->id)}
+                                    '<=', 'ft_int_value2', (int) $this->{$this->getAttributeNameRangeTo($feature->id)}
                                 ],
                             ]
                         ]);
@@ -516,19 +516,19 @@ class V3pFeatureValueHandler extends DynamicModel
                             [
                                 'and',
                                 [
-                                    '>=', 'fv.ft_num_value', (int) $this->{$this->getAttributeNameRangeFrom($feature->id)}
+                                    '>=', 'ft_num_value', (int) $this->{$this->getAttributeNameRangeFrom($feature->id)}
                                 ],
                                 [
-                                    '<=', 'fv.ft_num_value', (int) $this->{$this->getAttributeNameRangeTo($feature->id)}
+                                    '<=', 'ft_num_value', (int) $this->{$this->getAttributeNameRangeTo($feature->id)}
                                 ],
                             ],
                             [
                                 'and',
                                 [
-                                    '>=', 'fv.ft_num_value2', (int) $this->{$this->getAttributeNameRangeFrom($feature->id)}
+                                    '>=', 'ft_num_value2', (int) $this->{$this->getAttributeNameRangeFrom($feature->id)}
                                 ],
                                 [
-                                    '<=', 'fv.ft_num_value2', (int) $this->{$this->getAttributeNameRangeTo($feature->id)}
+                                    '<=', 'ft_num_value2', (int) $this->{$this->getAttributeNameRangeTo($feature->id)}
                                 ],
                             ]
                         ]);
