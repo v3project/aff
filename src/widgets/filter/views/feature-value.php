@@ -58,6 +58,19 @@ $widget = $this->context;
                   <div class="panel-body">
 
 
+                      <div style="display: none;">
+                          <div type="text"
+                               id="<?= $id ?>"
+                               class="range-slider"
+                               data-no-submit="true"
+                               data-type="double"
+                               data-min="<?= $min ?>"
+                               data-max="<?= $max ?>"
+                               data-from="<?= $val1; ?>"
+                               data-to="<?= $val2; ?>"
+                               data-postfix=" <?= $feature->measure_title; ?>."></div>
+
+                      </div>
 
                     <div class="col-md-6">
                         <?= $form->field($handler, $handler->getAttributeNameRangeFrom($feature->id))
