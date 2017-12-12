@@ -205,6 +205,9 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
      * @return $this
      */
     public function loadToV3pFilterHandler(V3pFeatureValueHandler $v3pFeatureValueHandler) {
+        $v3pFeatureValueHandler->base_brand_id = $this->v3pConcept->base_brand_id;
+        $v3pFeatureValueHandler->base_category_id = $this->v3pConcept->base_category_id;
+
         if ($this->v3pConcept && $this->v3pConcept->filter_values) {
             foreach ($this->v3pConcept->filter_values as $row) {
                 $featureId = ArrayHelper::getValue($row, 'feature_id');

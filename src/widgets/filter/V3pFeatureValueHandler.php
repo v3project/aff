@@ -31,6 +31,11 @@ use yii\widgets\ActiveForm;
  * @property ActiveQuery $baseQuery
  * @property ActiveQuery|int[] $elements
  *
+ * ***
+ *
+ * @property V3pFtSoption $baseCategory
+ * @property V3pFtSoption $baseBrand
+ *
  * Class V3pProductFeatureValueHandler
  * @package v3p\aff\widgets\filter
  */
@@ -50,6 +55,24 @@ class V3pFeatureValueHandler extends DynamicModel
     protected $_feature_values_data = [];
     protected $_feature_ids = [];
     protected $_ft_soptions_data = [];
+
+    public $base_category_id;
+    public $base_brand_id;
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getBaseBrand() {
+        return V3pFtSoption::findOne($this->base_brand_id);
+    }
+    /**
+     * @return ActiveQuery
+     */
+    public function getBaseCategory() {
+        return V3pFtSoption::findOne($this->base_category_id);
+    }
+
+
 
     /**
      * @var ActiveQuery

@@ -139,6 +139,7 @@ JS
                     if ($feature->buyer_description) {
                         $info = "<i class='fa fa-question' title='{$feature->buyer_description}'></i>";
                     }
+
                 ?>
 
             <div class="panel panel-default <?= $class; ?>">
@@ -152,30 +153,42 @@ JS
                 <div id="collapse<?= $feature->id; ?>" class="panel-collapse collapse <?= $classCollapsedIn; ?>" role="tabpanel" aria-labelledby="heading<?= $feature->id; ?>">
                   <div class="panel-body">
 
-                      <?= $form->field($handler, $code, [
-                            'options'      => [
-                                'class' => 'filter--group ' . $class,
-                                'tag' => 'section'
-                            ],
-                        ])->label(false)->checkboxList(
-                            $options
-                            , [
-                        'class' => 'sx-filters-checkbox-options filter--group--inner',
-                        'item' => function ($index, $label, $name, $checked, $value) use ($feature)
-                        {
-                            $input = \yii\helpers\Html::checkbox($name, $checked, [
-                                'id' => 'filter-check-' .  $feature->id . "-" . $index,
-                                'value' => $value
-                            ]);
-                            return <<<HTML
-    <div class="checkbox">
-    {$input}
-    <label for="filter-check-{$feature->id}-{$index}">{$label}</label>
-    </div>
+                      <? if ($handler->base_category_id && $feature->id == \v3p\aff\models\V3pFeature::ID_CATEGORY) :  ?>
+
+                          <?= $this->render('_tree_feature-value', [
+                                  'model' => $handler->baseCategory,
+                                  'handler' => $handler,
+                                  'feature' => $feature,
+                                  'values' => $values,
+                          ]); ?>
+
+
+                      <? else : ?>
+                          <?= $form->field($handler, $code, [
+                                'options'      => [
+                                    'class' => 'filter--group ' . $class,
+                                    'tag' => 'section'
+                                ],
+                            ])->label(false)->checkboxList(
+                                $options
+                                , [
+                            'class' => 'sx-filters-checkbox-options filter--group--inner',
+                            'item' => function ($index, $label, $name, $checked, $value) use ($feature)
+                            {
+                                $input = \yii\helpers\Html::checkbox($name, $checked, [
+                                    'id' => 'filter-check-' .  $feature->id . "-" . $index,
+                                    'value' => $value
+                                ]);
+                                return <<<HTML
+        <div class="checkbox">
+        {$input}
+        <label for="filter-check-{$feature->id}-{$index}">{$label}</label>
+        </div>
 HTML;
 
-                        }
-                    ]); ?>
+                            }
+                        ]); ?>
+                    <? endif; ?>
 
                   </div>
                 </div>

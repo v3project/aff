@@ -59,3 +59,10 @@
     margin-left: 0px;
     margin-top: 2px;
 }
+
+.sx-filters-tree, .sx-filters-tree ul {
+    padding-left: 10px;
+}
+ul.sx-filters-tree li, .sx-filters-tree ul li {
+    list-style: none;
+}
