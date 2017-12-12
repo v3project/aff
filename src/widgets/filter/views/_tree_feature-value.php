@@ -15,7 +15,11 @@ $widget = $this->context;
   <li>
 
   <div class="checkbox">
-        <input type="checkbox" id="filter-check-<?= $model->id; ?>" name="<?= $handler->formName(); ?>[f<?= $feature->id; ?>][]" value="<?= $model->id; ?>" <?= in_array($model->id, (array) $values) ? "checked": ""; ?>>
+        <input type="checkbox" id="filter-check-<?= $model->id; ?>" name="<?= $handler->formName(); ?>[f<?= $feature->id; ?>][]"
+               value="<?= $model->id; ?>"
+            <?= in_array($model->id, (array) $values) ? "checked": ""; ?>
+            <?= !in_array($model->id, (array) $options) ? "disabled": ""; ?>
+        >
         <label for="filter-check-<?= $model->id; ?>"><?= $model->title; ?></label>
     </div>
     <? if ($model->children) : ?>
@@ -25,6 +29,7 @@ $widget = $this->context;
                     'handler' => $handler,
                     'feature' => $feature,
                     'values' => $values,
+                    'options' => $options,
             ]); ?>
         <? endforeach; ?>
     <? endif; ?>

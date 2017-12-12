@@ -160,6 +160,7 @@ JS
                                   'handler' => $handler,
                                   'feature' => $feature,
                                   'values' => $values,
+                                  'options' => $options,
                           ]); ?>
 
 
