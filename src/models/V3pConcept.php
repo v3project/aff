@@ -189,6 +189,14 @@ class V3pConcept extends ActiveRecord
                         'name' => $tree->title,
                     ]);
                 }
+            } elseif ($this->baseBrand) {
+                $parents = $this->baseBrand->parents;
+                
+                foreach ($parents as $tree) {
+                    \Yii::$app->breadcrumbs->append([
+                        'name' => $tree->title,
+                    ]);
+                }
             }
         }
 

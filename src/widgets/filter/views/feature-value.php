@@ -120,12 +120,19 @@ JS
         <? endif; ?>
     <? elseif ($feature && in_array($feature->value_type, ['leaf_soption', 'any_soption'])) : ?>
 
+        <?
+            $code = $handler->getAttributeName($feature->id);
+            $values = $handler->{$code};
+        ?>
         <? if ($options = $handler->getOptions($feature)) : ?>
-            <? if (count($options) > 1) : ?>
+            <? if (
+                    count($options) > 1
+                || $values
+                /*|| $handler->base_category_id && $feature->id == \v3p\aff\models\V3pFeature::ID_CATEGORY
+                || $handler->base_brand_id && $feature->id == \v3p\aff\models\V3pFeature::ID_BRAND*/
+            ) : ?>
 
                 <?
-                    $code = $handler->getAttributeName($feature->id);
-                    $values = $handler->{$code};
                     $class = '';
                     $classCollapsed = 'collapsed';
                     $classCollapsedIn = '';
@@ -163,7 +170,35 @@ JS
                                   'options' => $options,
                           ]); ?>
 
+                    <? elseif ($handler->base_brand_id && $feature->id == \v3p\aff\models\V3pFeature::ID_BRAND) :  ?>
 
+                          <?= $this->render('_tree_feature-value', [
+                                  'model' => $handler->baseBrand,
+                                  'handler' => $handler,
+                                  'feature' => $feature,
+                                  'values' => $values,
+                                  'options' => $options,
+                          ]); ?>
+
+
+                      <?/* elseif ($feature->value_type == \v3p\aff\models\V3pFeature::VALUE_TYPE_ANY_SOPTION) : */?>
+
+                          <?/*
+                          print_r($options);die;
+                          \v3p\aff\models\V3pFtSoption::find()
+                                ->where(['id' => array_keys($options)])
+                                ->joinWith('parents')
+                                ->all()
+                          ;
+                          
+                          */?>
+                          <?/*= $this->render('_tree_feature-value', [
+                                  'handler' => $handler,
+                                  'feature' => $feature,
+                                  'values' => $values,
+                                  'options' => $options,
+                          ]); */?>
+                          
                       <? else : ?>
                           <?= $form->field($handler, $code, [
                                 'options'      => [

@@ -18,7 +18,7 @@ $widget = $this->context;
         <input type="checkbox" id="filter-check-<?= $model->id; ?>" name="<?= $handler->formName(); ?>[f<?= $feature->id; ?>][]"
                value="<?= $model->id; ?>"
             <?= in_array($model->id, (array) $values) ? "checked": ""; ?>
-            <?= !in_array($model->id, (array) $options) ? "disabled": ""; ?>
+            <?/*= !in_array($model->id, (array) $options) ? "disabled": ""; */?>
         >
         <label for="filter-check-<?= $model->id; ?>"><?= $model->title; ?></label>
     </div>
