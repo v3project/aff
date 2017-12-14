@@ -28,18 +28,22 @@ new sx.classes.ProductFilters();
                 $("button", self.JqueryForm).fadeIn();
             }
 
-            $("input, checkbox, select", this.JqueryForm).on("change", function()
+            $("input, select", this.JqueryForm).on("change", function()
             {
                 if ($(this).data('no-submit'))
                 {
                     return false;
                 }
 
+                if ($(this).is(':checked'))
+                {
+                    $(this).closest('li').find('input[type=checkbox]').prop('checked', true);
+                } else {
+                    $(this).closest('li').find('input[type=checkbox]').removeAttr('checked');
+                }
+                
                 self.JqueryForm.submit();
             });
-            
-            
-            
             
             var jSelectedWrapper = $(".sx-filters-selected-wrapper");
             

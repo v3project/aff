@@ -36,6 +36,9 @@ use paulzi\autotree\AutoTreeTrait;
  * @property integer $feature_min_choosen_soption_depth
  * @property integer $feature_max_choosen_soption_depth
  * @property string $brand_owner_country
+ *
+ * ***
+ * @property string $fullTitle
  */
 class V3pFtSoption extends \yii\db\ActiveRecord
 {
@@ -125,4 +128,23 @@ class V3pFtSoption extends \yii\db\ActiveRecord
         return $this->hasMany(V3pProductFeatureValue::class, ['ft_soption_id' => 'id']);
     }
 
+    /**
+     * @return string
+     */
+    public function getFullTitle() {
+
+        $result = [];
+
+        if ($this->depth > 1) {
+            if ($parents = $this->getParents(1)->all()) {
+                foreach ($parents as $parent) {
+                    $result[] = $parent->title;
+                }
+            }
+        }
+
+        $result[] = $this->title;
+
+        return implode(' / ', $result);
+    }
 }

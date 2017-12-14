@@ -282,13 +282,24 @@ class V3pFeatureValueHandler extends DynamicModel
                 ->andWhere(["fv.product_id" => $this->elements])
                 ->all();
 
-            if ($this->_ft_soptions_data) {
-                return ArrayHelper::map(
-                    $this->_ft_soptions_data,
-                    'id',
-                    'title'
-                );
+            if ($feature->value_type == V3pFeature::VALUE_TYPE_ANY_SOPTION) {
+                if ($this->_ft_soptions_data) {
+                    return ArrayHelper::map(
+                        $this->_ft_soptions_data,
+                        'id',
+                        'fullTitle'
+                    );
+                }
+            } else {
+                if ($this->_ft_soptions_data) {
+                    return ArrayHelper::map(
+                        $this->_ft_soptions_data,
+                        'id',
+                        'title'
+                    );
+                }
             }
+
         } else if (in_array($feature->value_type, [V3pFeature::VALUE_TYPE_BOOL])) {
             $this->_ft_soptions_data = V3pProductFeatureValue::find()
                 ->andWhere(['feature_id' => $feature_id])
