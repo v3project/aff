@@ -34,6 +34,7 @@ use yii\helpers\Json;
  * @property string $sorting_direction
  * @property string $slug
  * @property string $state
+ * @property string $published_state
  * @property string $filter_values_jsonarrayed
  * @property integer $saved_filter_id
  *
@@ -46,6 +47,9 @@ use yii\helpers\Json;
  */
 class V3pConcept extends ActiveRecord
 {
+    const PUBLISHED_STATE_ОПУБЛИКОВАН                = "опубликован";
+    const PUBLISHED_STATE_НЕ_ОПУБЛИКОВАН                = "не_опубликован";
+
     /**
      * @inheritdoc
      */
@@ -61,6 +65,7 @@ class V3pConcept extends ActiveRecord
     {
         return [
             [['created_at', 'updated_at'], 'safe'],
+            [['published_state'], 'string'],
             [['queries', 'description', 'filter_values_jsonarrayed'], 'string'],
             [['id', 'base_brand_id', 'base_category_id', 'per_page', 'page', 'saved_filter_id'], 'integer'],
             [['title', 'meta_title', 'meta_keywords', 'meta_description', 'keywords', 'sorting', 'sorting_direction', 'slug', 'state'], 'string', 'max' => 255],
