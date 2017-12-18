@@ -8,6 +8,7 @@
 
 namespace v3p\aff\savedFilters;
 
+use common\widgets\filters\V3pPerPageFiltersHandler;
 use skeeks\cms\models\CmsContent;
 use skeeks\cms\models\CmsContentElement;
 use skeeks\cms\modules\admin\widgets\form\ActiveFormUseTab;
@@ -196,6 +197,24 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
         if ($this->v3pConcept) {
             $this->v3pConcept->appendBreadcrumbs();
         }
+
+        return $this;
+    }
+
+    public function loadToPerPageFilterHandler(V3pPerPageFiltersHandler $perPageFiltersHandler)
+    {
+        $this->v3pConcept->per_page;
+        if ($sOptions = $perPageFiltersHandler->sOptions) {
+            if (!isset($sOptions[$this->v3pConcept->per_page]))
+            {
+                $sOptions = ArrayHelper::merge([(string) $this->v3pConcept->per_page => (int) $this->v3pConcept->per_page], $sOptions);
+            }
+        } else {
+            $sOptions = [(string) $this->v3pConcept->per_page => (int) $this->v3pConcept->per_page];
+        }
+
+        $perPageFiltersHandler->setSOptions($sOptions);
+        $perPageFiltersHandler->value = $this->v3pConcept->per_page;
 
         return $this;
     }
