@@ -148,7 +148,7 @@ class V3pConcept extends ActiveRecord
             return $this;
         }
         //Выбраны значения и это не базовый концепт
-        if ($this->filter_values && $this->base_category_id) {
+        if ($this->base_category_id) {
             //Поиск базового концепта
             $v3pConcept = V3pConcept::find()->where(['base_category_id' => $this->base_category_id])->andWhere(['filter_values_jsonarrayed' => null])->one();
             if ($v3pConcept)
@@ -166,7 +166,7 @@ class V3pConcept extends ActiveRecord
                     }
                 }
             }
-        } else if ($this->filter_values && $this->base_brand_id) {
+        } else if ($this->base_brand_id) {
             //Поиск базового концепта
             $v3pConcept = V3pConcept::find()->where(['base_brand_id' => $this->base_brand_id])->andWhere(['filter_values_jsonarrayed' => null])->one();
             if ($v3pConcept)

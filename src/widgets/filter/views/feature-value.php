@@ -181,7 +181,7 @@ JS
                           ]); ?>
 
 
-                      <?/* elseif ($feature->value_type == \v3p\aff\models\V3pFeature::VALUE_TYPE_ANY_SOPTION) : */?>
+                      <? elseif ($feature->value_type == \v3p\aff\models\V3pFeature::VALUE_TYPE_ANY_SOPTION) : ?>
 
                           <?/*
                           print_r($options);die;
@@ -190,7 +190,7 @@ JS
                                 ->joinWith('parents')
                                 ->all()
                           ;
-                          
+
                           */?>
                           <?/*= $this->render('_tree_feature-value', [
                                   'handler' => $handler,
