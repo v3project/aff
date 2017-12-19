@@ -181,26 +181,27 @@ JS
                           ]); ?>
 
 
-                      <? elseif ($feature->value_type == \v3p\aff\models\V3pFeature::VALUE_TYPE_ANY_SOPTION) : ?>
-
-                          <?/*
-                          print_r($options);die;
-                          \v3p\aff\models\V3pFtSoption::find()
-                                ->where(['id' => array_keys($options)])
-                                ->joinWith('parents')
-                                ->all()
-                          ;
-
-                          */?>
-                          <?/*= $this->render('_tree_feature-value', [
-                                  'handler' => $handler,
-                                  'feature' => $feature,
-                                  'values' => $values,
-                                  'options' => $options,
-                          ]); */?>
                           
                       <? else : ?>
-                          <?= $form->field($handler, $code, [
+
+                          <?
+                                $ftSoptions = $feature->GETftSoptions()->andWhere(['depth' => 1])->all();
+                          ?>
+
+                          <? if ($ftSoptions) : ?>
+                              <? foreach ($ftSoptions as $ftSoption) : ?>
+                                  <?= $this->render('_tree_feature-value', [
+                                      'model' => $ftSoption,
+                                      'handler' => $handler,
+                                      'feature' => $feature,
+                                      'values' => $values,
+                                      'options' => $options,
+                                  ]); ?>
+                              <? endforeach; ?>
+                          <? endif; ?>
+
+
+                          <?/*= $form->field($handler, $code, [
                                 'options'      => [
                                     'class' => 'filter--group ' . $class,
                                     'tag' => 'section'
@@ -223,7 +224,7 @@ JS
 HTML;
 
                             }
-                        ]); ?>
+                        ]); */?>
                     <? endif; ?>
 
                   </div>

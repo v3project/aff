@@ -66,3 +66,12 @@
 ul.sx-filters-tree li, .sx-filters-tree ul li {
     list-style: none;
 }
+
+
+.sx-product-filters .panel-default {
+    border-color: #ddd;
+    border-bottom: 0px;
+    box-shadow: none;
+    border-radius: 0px;
+    margin-bottom: 5px;
+}

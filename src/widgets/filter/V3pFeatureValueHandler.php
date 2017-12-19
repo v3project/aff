@@ -31,6 +31,66 @@ use yii\widgets\ActiveForm;
  * @property ActiveQuery $baseQuery
  * @property ActiveQuery|int[] $elements
  *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ * SELECT feature_id
+    , feature_value_type
+    , json_agg(ft_soption_id) FILTER (WHERE ft_soption_id IS NOT NULL) as ft_soption_ids_jsonarrayed
+    , min(ft_int_value) as min_ft_int_value
+    , max(ft_int_value) as max_ft_int_value
+    , max(ft_int_value2) as max_ft_int_value2
+    , min(ft_num_value) as min_ft_num_value
+    , max(ft_num_value) as max_ft_num_value
+    , max(ft_num_value2) as max_ft_num_value2
+    , COALESCE(sum(1) FILTER (WHERE ft_bool_value IS NOT DISTINCT FROM TRUE), 0) as count_true
+    , COALESCE(sum(1) FILTER (WHERE ft_bool_value IS NOT DISTINCT FROM FALSE), 0) as count_false
+FROM "v3p_product_feature_value"
+WHERE
+--     ("feature_id" IN (126,148))
+--     AND
+    ("feature_value_type" IN (
+              'leaf_soption'
+            , 'any_soption'
+            , 'bool'
+            , 'int'
+            , 'num'
+            , 'int_range'
+            , 'num_range'
+    ))
+    AND
+    ("product_id" IN (SELECT "v3property"."v3toys_id" AS "id" FROM "cms_content_element" LEFT JOIN "v3toys_product_property" "v3property" ON "cms_content_element"."id" = "v3property"."id" WHERE ("content_id"=2) AND ("v3property"."v3toys_id" IN (SELECT "product_id" AS "id" FROM "v3p_product_feature_value" WHERE ("feature_id"=1) AND ("ft_soption_id" IN (SELECT "id" FROM "v3p_ft_soption" WHERE ("feature_id"=1) AND ("lft" >= 46) AND ("rgt" <= 75)))))))
+--     AND
+--     (("ft_num_value" IS NOT NULL) OR ("ft_num_value2" IS NOT NULL))
+GROUP BY "feature_id", "feature_value_type"
+
+ *
+ *
+ *
+ * SELECT ft_soption_id
+    , count(*) as count_ft_soption_id
+FROM "v3p_product_feature_value"
+WHERE
+    true
+--     ("feature_id" IN (126,148))
+    AND
+    ("feature_value_type" IN (
+              'leaf_soption'
+            , 'any_soption'
+--             , 'bool'
+
+    ))
+    AND
+    ("product_id" IN (SELECT "v3property"."v3toys_id" AS "id" FROM "cms_content_element" LEFT JOIN "v3toys_product_property" "v3property" ON "cms_content_element"."id" = "v3property"."id" WHERE ("content_id"=2) AND ("v3property"."v3toys_id" IN (SELECT "product_id" AS "id" FROM "v3p_product_feature_value" WHERE ("feature_id"=1) AND ("ft_soption_id" IN (SELECT "id" FROM "v3p_ft_soption" WHERE ("feature_id"=1) AND ("lft" >= 46) AND ("rgt" <= 75)))))))
+--     AND
+--     (("ft_num_value" IS NOT NULL) OR ("ft_num_value2" IS NOT NULL))
+GROUP BY "ft_soption_id"
+ *
+ *
  * ***
  *
  * @property V3pFtSoption $baseCategory
@@ -321,9 +381,6 @@ class V3pFeatureValueHandler extends DynamicModel
                 return $result;
             }
         }
-
-
-
 
         return [];
     }

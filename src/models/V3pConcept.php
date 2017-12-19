@@ -9,6 +9,7 @@
 namespace v3p\aff\models;
 
 use skeeks\cms\savedFilters\models\SavedFilters;
+use yii\base\UserException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\helpers\Json;
@@ -185,7 +186,8 @@ class V3pConcept extends ActiveRecord
                 }
             }
         } else {
-            if ($this->baseCategory) {
+            throw new UserException('У концепта обязательно должен быть выбран один из базовых фильтров.');
+            /*if ($this->baseCategory) {
 
                 $parents = $this->baseCategory->parents;
 
@@ -202,7 +204,7 @@ class V3pConcept extends ActiveRecord
                         'name' => $tree->title,
                     ]);
                 }
-            }
+            }*/
         }
 
         \Yii::$app->breadcrumbs->append([
