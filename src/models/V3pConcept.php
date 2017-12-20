@@ -151,7 +151,9 @@ class V3pConcept extends ActiveRecord
         //Выбраны значения и это не базовый концепт
         if ($this->base_category_id) {
             //Поиск базового концепта
-            $v3pConcept = V3pConcept::find()->where(['base_category_id' => $this->base_category_id])->andWhere(['filter_values_jsonarrayed' => null])->one();
+
+
+            /*$v3pConcept = V3pConcept::find()->where(['base_category_id' => $this->base_category_id])->andWhere(['filter_values_jsonarrayed' => null])->one();
             if ($v3pConcept)
             {
                 $v3pConcept->appendBreadcrumbs();
@@ -166,10 +168,37 @@ class V3pConcept extends ActiveRecord
                         ]);
                     }
                 }
+            }*/
+
+
+            if ($this->baseCategory) {
+
+                $parents = $this->baseCategory->parents;
+
+                foreach ($parents as $v3pFtSoption) {
+
+                    $v3pConcept = V3pConcept::find()
+                        ->where(['base_category_id' => $v3pFtSoption->id])
+                        ->andWhere(['filter_values_jsonarrayed' => null])
+                        ->one();
+
+                    if ($v3pConcept) {
+                        \Yii::$app->breadcrumbs->append([
+                            'name' => $v3pConcept->title,
+                            'url' => $v3pConcept->url,
+                        ]);
+                    } else {
+                        \Yii::$app->breadcrumbs->append([
+                            'name' => $v3pFtSoption->title,
+                        ]);
+                    }
+                }
             }
+
+
         } else if ($this->base_brand_id) {
             //Поиск базового концепта
-            $v3pConcept = V3pConcept::find()->where(['base_brand_id' => $this->base_brand_id])->andWhere(['filter_values_jsonarrayed' => null])->one();
+            /*$v3pConcept = V3pConcept::find()->where(['base_brand_id' => $this->base_brand_id])->andWhere(['filter_values_jsonarrayed' => null])->one();
             if ($v3pConcept)
             {
                 $v3pConcept->appendBreadcrumbs();
@@ -185,6 +214,29 @@ class V3pConcept extends ActiveRecord
                     }
                 }
             }
+            */
+
+            $parents = $this->baseBrand->parents;
+
+            foreach ($parents as $v3pFtSoption) {
+
+                $v3pConcept = V3pConcept::find()
+                    ->where(['base_brand_id' => $v3pFtSoption->id])
+                    ->andWhere(['filter_values_jsonarrayed' => null])
+                    ->one();
+
+                if ($v3pConcept) {
+                    \Yii::$app->breadcrumbs->append([
+                        'name' => $v3pConcept->title,
+                        'url' => $v3pConcept->url,
+                    ]);
+                } else {
+                    \Yii::$app->breadcrumbs->append([
+                        'name' => $v3pFtSoption->title,
+                    ]);
+                }
+            }
+
         } else {
             throw new UserException('У концепта обязательно должен быть выбран один из базовых фильтров.');
             /*if ($this->baseCategory) {
