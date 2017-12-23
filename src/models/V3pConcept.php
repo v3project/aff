@@ -35,7 +35,7 @@ use yii\helpers\Json;
  * @property string $sorting_direction
  * @property string $slug
  * @property string $state
- * @property string $published_state
+ * @property bool $is_published
  * @property string $filter_values_jsonarrayed
  * @property integer $saved_filter_id
  *
