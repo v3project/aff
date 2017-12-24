@@ -185,7 +185,11 @@ JS
                       <? else : ?>
 
                           <?
-                                $ftSoptions = $feature->GETftSoptions()->andWhere(['depth' => 1])->all();
+                                //$ftSoptions = $feature->GETftSoptions()->andWhere(['depth' => 1])->all();
+                                $ftSoptions = $feature->GETftSoptions()
+                                    ->andWhere(['id' => $values])
+                                    ->joinWith('parents as p')
+                                    ->all();
                                 /*$ftSoptions = [];*/
                           ?>
 
