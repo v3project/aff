@@ -185,8 +185,8 @@ JS
                       <? else : ?>
 
                           <?
-                                //$ftSoptions = $feature->GETftSoptions()->andWhere(['depth' => 1])->all();
-                                $ftSoptions = [];
+                                $ftSoptions = $feature->GETftSoptions()->andWhere(['depth' => 1])->all();
+                                /*$ftSoptions = [];*/
                           ?>
 
                           <? if ($ftSoptions) : ?>
