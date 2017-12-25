@@ -174,6 +174,7 @@ class V3pConcept extends ActiveRecord
             if ($this->baseCategory) {
 
                 $parents = $this->baseCategory->parents;
+                $parents[] = $this->baseCategory;
 
                 foreach ($parents as $v3pFtSoption) {
 
@@ -217,7 +218,8 @@ class V3pConcept extends ActiveRecord
             */
 
             $parents = $this->baseBrand->parents;
-
+            $parents[] = $this->baseBrand;
+            
             foreach ($parents as $v3pFtSoption) {
 
                 $v3pConcept = V3pConcept::find()
