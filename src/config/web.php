@@ -8,7 +8,9 @@
 $config = [
 
     'components' => [
-
+        'cmsSettingsExternalLinks' => [
+            'enabled' => true,
+        ],
     ],
 ];
 

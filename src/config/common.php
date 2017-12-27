@@ -14,7 +14,16 @@ $config = [
             'class' => \v3p\aff\V3pComponent::class,
         ],
 
+        'cache' => [
+            'class' => 'yii\caching\FileCache',
+        ],
+
+        'assetManager' => [
+            'linkAssets' => true,
+        ],
+
         'cmsAgent' => [
+            'onHitsEnabled' => false,
             'commands' => [
 
                 'v3p/sync/features' => [

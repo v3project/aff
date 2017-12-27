@@ -1,5 +1,5 @@
-Module for SkeekS CMS
-===================================
+Базовый пакет Аффилиата на SkeekS CMS (Yii2)
+====================================================
 
 [![Latest Stable Version](https://poser.pugx.org/v3toys/skeeks/v/stable.png)](https://packagist.org/packages/v3toys/skeeks)
 
