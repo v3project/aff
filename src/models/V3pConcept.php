@@ -148,29 +148,11 @@ class V3pConcept extends ActiveRecord
             \Yii::$app->breadcrumbs->setPartsByTree($tree);
             return $this;
         }
+
+        $v3pConcept = null;
         //Выбраны значения и это не базовый концепт
         if ($this->base_category_id) {
             //Поиск базового концепта
-
-
-            /*$v3pConcept = V3pConcept::find()->where(['base_category_id' => $this->base_category_id])->andWhere(['filter_values_jsonarrayed' => null])->one();
-            if ($v3pConcept)
-            {
-                $v3pConcept->appendBreadcrumbs();
-            } else {
-                if ($this->baseCategory) {
-
-                    $parents = $this->baseCategory->parents;
-
-                    foreach ($parents as $tree) {
-                        \Yii::$app->breadcrumbs->append([
-                            'name' => $tree->title,
-                        ]);
-                    }
-                }
-            }*/
-
-
             if ($this->baseCategory) {
 
                 $parents = $this->baseCategory->parents;
@@ -198,24 +180,6 @@ class V3pConcept extends ActiveRecord
 
 
         } else if ($this->base_brand_id) {
-            //Поиск базового концепта
-            /*$v3pConcept = V3pConcept::find()->where(['base_brand_id' => $this->base_brand_id])->andWhere(['filter_values_jsonarrayed' => null])->one();
-            if ($v3pConcept)
-            {
-                $v3pConcept->appendBreadcrumbs();
-            } else {
-                if ($this->baseBrand) {
-
-                    $parents = $this->baseBrand->parents;
-
-                    foreach ($parents as $tree) {
-                        \Yii::$app->breadcrumbs->append([
-                            'name' => $tree->title,
-                        ]);
-                    }
-                }
-            }
-            */
 
             $parents = $this->baseBrand->parents;
             $parents[] = $this->baseBrand;
@@ -241,28 +205,19 @@ class V3pConcept extends ActiveRecord
 
         } else {
             throw new UserException('У концепта обязательно должен быть выбран один из базовых фильтров.');
-            /*if ($this->baseCategory) {
-
-                $parents = $this->baseCategory->parents;
-
-                foreach ($parents as $tree) {
-                    \Yii::$app->breadcrumbs->append([
-                        'name' => $tree->title,
-                    ]);
-                }
-            } elseif ($this->baseBrand) {
-                $parents = $this->baseBrand->parents;
-
-                foreach ($parents as $tree) {
-                    \Yii::$app->breadcrumbs->append([
-                        'name' => $tree->title,
-                    ]);
-                }
-            }*/
         }
 
-        if (!$v3pConcept->filter_values_jsonarrayed)
+        if ($v3pConcept)
         {
+            if ($v3pConcept->filter_values_jsonarrayed)
+            {
+                \Yii::$app->breadcrumbs->append([
+                    'name' => $this->title,
+                    'url' => $this->url,
+                ]);
+            }
+
+        } else {
             \Yii::$app->breadcrumbs->append([
                 'name' => $this->title,
                 'url' => $this->url,
