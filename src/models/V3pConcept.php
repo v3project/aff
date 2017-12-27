@@ -219,7 +219,7 @@ class V3pConcept extends ActiveRecord
 
             $parents = $this->baseBrand->parents;
             $parents[] = $this->baseBrand;
-            
+
             foreach ($parents as $v3pFtSoption) {
 
                 $v3pConcept = V3pConcept::find()
@@ -252,7 +252,7 @@ class V3pConcept extends ActiveRecord
                 }
             } elseif ($this->baseBrand) {
                 $parents = $this->baseBrand->parents;
-                
+
                 foreach ($parents as $tree) {
                     \Yii::$app->breadcrumbs->append([
                         'name' => $tree->title,
@@ -261,10 +261,14 @@ class V3pConcept extends ActiveRecord
             }*/
         }
 
-        \Yii::$app->breadcrumbs->append([
-            'name' => $this->title,
-            'url' => $this->url,
-        ]);
+        if (!$v3pConcept->filter_values_jsonarrayed)
+        {
+            \Yii::$app->breadcrumbs->append([
+                'name' => $this->title,
+                'url' => $this->url,
+            ]);
+        }
+
 
 
         return $this;
