@@ -57,20 +57,6 @@
             "v3p\\aff\\": "src/"
         }
     },
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "https://asset-packagist.org"
-        },
-        {
-            "type": "composer",
-            "url": "https://comprepo.v3project.ru"
-        },
-        {
-            "type": "git",
-            "url": "https://github.com/v3project/yii2-product-filter.git"
-        }
-    ],
     "extra": {
 		"config-plugin": {
             "web": [
