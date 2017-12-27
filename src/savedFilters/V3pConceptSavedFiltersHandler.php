@@ -109,7 +109,7 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
 
             $ft_soption_query = V3pFtSoption::find()
                 ->select(['id'])
-                ->where(['feature_id' => 1])
+                ->where(['feature_id' => V3pFeature::ID_CATEGORY])
                 ->andWhere([
                     '>=',
                     'lft',
@@ -122,7 +122,7 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
                 ]);
 
             $unionQueries[] = V3pProductFeatureValue::find()->select(['product_id as id'])->where([
-                'feature_id' => 1,
+                'feature_id' => V3pFeature::ID_CATEGORY,
                 'ft_soption_id' => $ft_soption_query,
             ]);
         } elseif ($v3pConcept->base_brand_id) {
@@ -138,7 +138,7 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
 
             $ft_soption_query = V3pFtSoption::find()
                 ->select(['id'])
-                ->where(['feature_id' => 2])
+                ->where(['feature_id' => V3pFeature::ID_BRAND])
                 ->andWhere([
                     '>=',
                     'lft',
@@ -151,7 +151,7 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
                 ]);
 
             $unionQueries[] = V3pProductFeatureValue::find()->select(['product_id as id'])->where([
-                'feature_id' => 2,
+                'feature_id' => V3pFeature::ID_BRAND,
                 'ft_soption_id' => $ft_soption_query,
             ]);
         }
@@ -184,8 +184,8 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
         }
 
         if ($unionQuery) {
-            $activeQuery->joinWith(['v3toysProductProperty as v3property']);
-            $activeQuery->andWhere(['in', "v3property.v3toys_id", $unionQuery]);
+            $activeQuery->joinWith(['v3toysProductProperty']);
+            $activeQuery->andWhere(['in', "v3toysProductProperty.v3toys_id", $unionQuery]);
         }
 
         return $this;

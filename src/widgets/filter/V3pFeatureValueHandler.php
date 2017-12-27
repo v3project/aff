@@ -151,6 +151,8 @@ class V3pFeatureValueHandler extends DynamicModel
 
     public function getFeatureIdsQuery()
     {
+                print_r($activeQuery->createCommand()->rawSql);
+die;
         $activeQuery = clone $this->baseQuery;
 
         $activeQuery->joinWith(['v3toysProductProperty.productFeatureValues as fv']);
@@ -224,8 +226,8 @@ class V3pFeatureValueHandler extends DynamicModel
         if ($this->_elements === null) {
             $activeQuery = clone $this->baseQuery;
 
-            $activeQuery->joinWith(['v3toysProductProperty as v3property']);
-            $activeQuery->select(['v3property.v3toys_id as id']);
+            $activeQuery->joinWith(['v3toysProductProperty']);
+            $activeQuery->select(['v3toysProductProperty.v3toys_id as id']);
             $activeQuery->orderBy = [];
             $activeQuery->groupBy = [];
             $activeQuery->with = [];
@@ -659,8 +661,8 @@ class V3pFeatureValueHandler extends DynamicModel
             }
 
             //print_r($unionQuery->createCommand()->rawSql);die;
-            $activeQuery->joinWith(['v3toysProductProperty as v3property']);
-            $activeQuery->andWhere(['in', 'v3property.v3toys_id', $unionQuery]);
+            $activeQuery->joinWith(['v3toysProductProperty']);
+            $activeQuery->andWhere(['in', 'v3toysProductProperty.v3toys_id', $unionQuery]);
             //print_r($activeQuery->createCommand()->rawSql);die;
         }
 

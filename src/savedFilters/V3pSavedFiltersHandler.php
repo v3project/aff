@@ -193,8 +193,8 @@ class V3pSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFiltersHandle
         }
 
         if ($unionQuery) {
-            $activeQuery->joinWith(['v3toysProductProperty as v3property']);
-            $activeQuery->andWhere(['in', "v3property.v3toys_id", $unionQuery]);
+            $activeQuery->joinWith(['v3toysProductProperty']);
+            $activeQuery->andWhere(['in', "v3toysProductProperty.v3toys_id", $unionQuery]);
         }
 
         return $this;
