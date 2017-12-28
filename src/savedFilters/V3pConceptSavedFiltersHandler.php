@@ -60,12 +60,18 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
         ];
     }
 
+    protected $_v3pConcept = false;
     /**
      * @return V3pConcept
      */
     public function getV3pConcept()
     {
-        return V3pConcept::findOne($this->v3p_concept_id);
+        if ($this->_v3pConcept !== false) {
+            return $this->_v3pConcept;
+        }
+
+        $this->_v3pConcept = V3pConcept::findOne($this->v3p_concept_id);
+        return $this->_v3pConcept;
     }
 
     /*public function load($data, $formName = null)
