@@ -17,9 +17,6 @@
     ], 
     "minimum-stability": "dev",
     "require": {
-        "skeeks/cms-tree-redirect": "1.0.0-alpha2@dev",
-        "skeeks/cms-basic-shop": "^1.0.0 || dev-master",
-
         "v3project/yii2-helpers": "~1.0.8"
     },
     "autoload": {

@@ -9,7 +9,6 @@
 namespace v3p\aff\models;
 
 use skeeks\cms\savedFilters\models\SavedFilters;
-use yii\base\UserException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\helpers\Json;
@@ -35,7 +34,6 @@ use yii\helpers\Json;
  * @property string $sorting_direction
  * @property string $slug
  * @property string $state
- * @property bool $is_published
  * @property string $filter_values_jsonarrayed
  * @property integer $saved_filter_id
  *
@@ -48,9 +46,6 @@ use yii\helpers\Json;
  */
 class V3pConcept extends ActiveRecord
 {
-    const PUBLISHED_STATE_ОПУБЛИКОВАН                = "опубликован";
-    const PUBLISHED_STATE_НЕ_ОПУБЛИКОВАН                = "не_опубликован";
-
     /**
      * @inheritdoc
      */
@@ -66,7 +61,6 @@ class V3pConcept extends ActiveRecord
     {
         return [
             [['created_at', 'updated_at'], 'safe'],
-            [['published_state'], 'string'],
             [['queries', 'description', 'filter_values_jsonarrayed'], 'string'],
             [['id', 'base_brand_id', 'base_category_id', 'per_page', 'page', 'saved_filter_id'], 'integer'],
             [['title', 'meta_title', 'meta_keywords', 'meta_description', 'keywords', 'sorting', 'sorting_direction', 'slug', 'state'], 'string', 'max' => 255],
@@ -148,82 +142,31 @@ class V3pConcept extends ActiveRecord
             \Yii::$app->breadcrumbs->setPartsByTree($tree);
             return $this;
         }
-
-        $v3pConcept = null;
         //Выбраны значения и это не базовый концепт
-        if ($this->base_category_id) {
+        if ($this->filter_values) {
             //Поиск базового концепта
+            $v3pConcept = V3pConcept::find()->where(['base_category_id' => $this->base_category_id])->andWhere(['filter_values_jsonarrayed' => null])->one();
+            if ($v3pConcept)
+            {
+                $v3pConcept->appendBreadcrumbs();
+            }
+        } else {
             if ($this->baseCategory) {
 
                 $parents = $this->baseCategory->parents;
-                $parents[] = $this->baseCategory;
 
-                foreach ($parents as $v3pFtSoption) {
-
-                    $v3pConcept = V3pConcept::find()
-                        ->where(['base_category_id' => $v3pFtSoption->id])
-                        ->andWhere(['filter_values_jsonarrayed' => null])
-                        ->one();
-
-                    if ($v3pConcept) {
-                        \Yii::$app->breadcrumbs->append([
-                            'name' => $v3pConcept->title,
-                            'url' => $v3pConcept->url,
-                        ]);
-                    } else {
-                        \Yii::$app->breadcrumbs->append([
-                            'name' => $v3pFtSoption->title,
-                        ]);
-                    }
-                }
-            }
-
-
-        } else if ($this->base_brand_id) {
-
-            $parents = $this->baseBrand->parents;
-            $parents[] = $this->baseBrand;
-
-            foreach ($parents as $v3pFtSoption) {
-
-                $v3pConcept = V3pConcept::find()
-                    ->where(['base_brand_id' => $v3pFtSoption->id])
-                    ->andWhere(['filter_values_jsonarrayed' => null])
-                    ->one();
-
-                if ($v3pConcept) {
+                foreach ($parents as $tree) {
                     \Yii::$app->breadcrumbs->append([
-                        'name' => $v3pConcept->title,
-                        'url' => $v3pConcept->url,
-                    ]);
-                } else {
-                    \Yii::$app->breadcrumbs->append([
-                        'name' => $v3pFtSoption->title,
+                        'name' => $tree->title,
                     ]);
                 }
             }
-
-        } else {
-            throw new UserException('У концепта обязательно должен быть выбран один из базовых фильтров.');
         }
 
-        if ($v3pConcept)
-        {
-            if ($v3pConcept->filter_values_jsonarrayed)
-            {
-                \Yii::$app->breadcrumbs->append([
-                    'name' => $this->title,
-                    'url' => $this->url,
-                ]);
-            }
-
-        } else {
-            \Yii::$app->breadcrumbs->append([
-                'name' => $this->title,
-                'url' => $this->url,
-            ]);
-        }
-
+        \Yii::$app->breadcrumbs->append([
+            'name' => $this->title,
+            'url' => $this->url,
+        ]);
 
 
         return $this;

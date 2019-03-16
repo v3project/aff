@@ -162,10 +162,6 @@ class V3pProductFeatureValue extends ActiveRecord
     {
         $feature = $this->feature;
 
-        if (!$feature)
-        {
-            return '!!!' . $this->id;
-        }
         if ($this->ft_not_value)
         {
             return $this->ft_not_value;
@@ -179,10 +175,6 @@ class V3pProductFeatureValue extends ActiveRecord
                 return (string) ArrayHelper::getValue($data, 'astype')  . "\n" .  $this->ft_json_value;
             }
         }*/
-
-        if (!$feature->value_type) {
-            return '!!!';
-        }
 
         if (in_array($feature->value_type, [
             V3pFeature::VALUE_TYPE_ANY_SOPTION,
@@ -256,19 +248,5 @@ class V3pProductFeatureValue extends ActiveRecord
         }
 
         throw new Exception('!!!');
-    }
-
-    /**
-     * @param $v3pProductId
-     * @return ActiveQuery
-     */
-    public static function findByV3pProduct($v3pProductId) {
-        return static::find()
-            ->with('feature')
-            ->joinWith('feature as f')
-            ->with('ftSoption')
-            ->orderBy(['f.priority' => SORT_ASC])
-            ->where(['product_id' => $v3pProductId])
-            ->andWhere(['NOT IN', 'f.id', V3pFeature::HIDDEN_FEATURE_IDS]);
     }
 }

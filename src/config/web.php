@@ -7,6 +7,9 @@
  */
 $config = [
 
+    'components' => [
+
+    ],
 ];
 
 

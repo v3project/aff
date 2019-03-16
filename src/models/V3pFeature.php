@@ -50,14 +50,6 @@ class V3pFeature extends ActiveRecord
     const VALUE_TYPE_STRING = 'string';
     const VALUE_TYPE_TEXT = 'text';
 
-    const HIDDEN_FEATURE_IDS = [
-            16 //Отображать возраст в месяцах?
-        ,   118 //Тип Ассортиментности
-        ,   169 //Обобщенные данные
-        ,   121 //Изображение
-        ,   261 //Тип отображения возраста
-    ];
-
     /**
      * @inheritdoc
      */
