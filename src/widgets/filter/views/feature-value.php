@@ -33,44 +33,15 @@ $widget = $this->context;
         $toId = \yii\helpers\Html::getInputId($handler, $handler->getAttributeNameRangeTo($feature->id));
         $id = \yii\helpers\Html::getInputId($handler, $handler->getAttributeName($feature->id));
 
-        $classCollapsed = 'collapsed';
-        $classCollapsedIn = '';
-        $class = '';
-
-        if (($val1 != $min || $val2 != $max)) {
-            $class = "opened sx-filter-selected";
-            $classCollapsed = "";
-            $classCollapsedIn = 'in';
-        }
         ?>
         <? if ($min != $max
             //&& $max > 0
         ) : ?>
-            <div class="panel panel-default <?= $class; ?>">
-                <div class="panel-heading" role="tab" id="heading<?= $feature->id; ?>">
-                  <h4 class="panel-title">
-                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse<?= $feature->id; ?>" aria-expanded="true" aria-controls="collapse<?= $feature->id; ?>" class="<?= $classCollapsed; ?>">
-                      <?= $feature->title; ?>
-                    </a>
-                  </h4>
-                </div>
-                <div id="collapse<?= $feature->id; ?>" class="panel-collapse collapse <?= $classCollapsedIn; ?>" role="tabpanel" aria-labelledby="heading<?= $feature->id; ?>">
-                  <div class="panel-body">
-
-
-                      <div style="display: none;">
-                          <div type="text"
-                               id="<?= $id ?>"
-                               class="range-slider"
-                               data-no-submit="true"
-                               data-type="double"
-                               data-min="<?= $min ?>"
-                               data-max="<?= $max ?>"
-                               data-from="<?= $val1; ?>"
-                               data-to="<?= $val2; ?>"
-                               data-postfix=" <?= $feature->measure_title; ?>."></div>
-
-                      </div>
+            <div class="sx-product-filter-wrapper">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label><?= $handler->getAttributeLabel($code); ?></label>
+                    </div>
 
                     <div class="col-md-6">
                         <?= $form->field($handler, $handler->getAttributeNameRangeFrom($feature->id))
@@ -116,23 +87,15 @@ JS
                     </div>
                 </div>
             </div>
-            </div>
         <? endif; ?>
     <? elseif ($feature && in_array($feature->value_type, ['leaf_soption', 'any_soption'])) : ?>
 
-        <?
-            $code = $handler->getAttributeName($feature->id);
-            $values = $handler->{$code};
-        ?>
-        <? if ($options = $handler->getOptions($feature)) : ?>
-            <? if (
-                    count($options) > 1
-                || $values
-                /*|| $handler->base_category_id && $feature->id == \v3p\aff\models\V3pFeature::ID_CATEGORY
-                || $handler->base_brand_id && $feature->id == \v3p\aff\models\V3pFeature::ID_BRAND*/
-            ) : ?>
+        <? if ($options = $handler->getOptions($feature->id)) : ?>
+            <? if (count($options) > 1) : ?>
 
                 <?
+                    $code = $handler->getAttributeName($feature->id);
+                    $values = $handler->{$code};
                     $class = '';
                     $classCollapsed = 'collapsed';
                     $classCollapsedIn = '';
@@ -146,7 +109,6 @@ JS
                     if ($feature->buyer_description) {
                         $info = "<i class='fa fa-question' title='{$feature->buyer_description}'></i>";
                     }
-
                 ?>
 
             <div class="panel panel-default <?= $class; ?>">
@@ -160,77 +122,30 @@ JS
                 <div id="collapse<?= $feature->id; ?>" class="panel-collapse collapse <?= $classCollapsedIn; ?>" role="tabpanel" aria-labelledby="heading<?= $feature->id; ?>">
                   <div class="panel-body">
 
-                      <? if ($handler->base_category_id && $feature->id == \v3p\aff\models\V3pFeature::ID_CATEGORY) :  ?>
-
-                          <?= $this->render('_tree_feature-value', [
-                                  'model' => $handler->baseCategory,
-                                  'handler' => $handler,
-                                  'feature' => $feature,
-                                  'values' => $values,
-                                  'options' => $options,
-                          ]); ?>
-
-                    <? elseif ($handler->base_brand_id && $feature->id == \v3p\aff\models\V3pFeature::ID_BRAND) :  ?>
-
-                          <?= $this->render('_tree_feature-value', [
-                                  'model' => $handler->baseBrand,
-                                  'handler' => $handler,
-                                  'feature' => $feature,
-                                  'values' => $values,
-                                  'options' => $options,
-                          ]); ?>
-
-
-                          
-                      <? else : ?>
-
-                          <?
-                                //$ftSoptions = $feature->GETftSoptions()->andWhere(['depth' => 1])->all();
-                                /*$ftSoptions = $feature->GETftSoptions()
-                                    ->andWhere(['id' => $values])
-                                    ->joinWith('parent as p')
-                                    ->all();*/
-                                $ftSoptions = [];
-                          ?>
-
-                          <? if ($ftSoptions) : ?>
-                              <? foreach ($ftSoptions as $ftSoption) : ?>
-                                  <?= $this->render('_tree_feature-value', [
-                                      'model' => $ftSoption,
-                                      'handler' => $handler,
-                                      'feature' => $feature,
-                                      'values' => $values,
-                                      'options' => $options,
-                                  ]); ?>
-                              <? endforeach; ?>
-                          <? endif; ?>
-
-
-                          <?/*= $form->field($handler, $code, [
-                                'options'      => [
-                                    'class' => 'filter--group ' . $class,
-                                    'tag' => 'section'
-                                ],
-                            ])->label(false)->checkboxList(
-                                $options
-                                , [
-                            'class' => 'sx-filters-checkbox-options filter--group--inner',
-                            'item' => function ($index, $label, $name, $checked, $value) use ($feature)
-                            {
-                                $input = \yii\helpers\Html::checkbox($name, $checked, [
-                                    'id' => 'filter-check-' .  $feature->id . "-" . $index,
-                                    'value' => $value
-                                ]);
-                                return <<<HTML
-        <div class="checkbox">
-        {$input}
-        <label for="filter-check-{$feature->id}-{$index}">{$label}</label>
-        </div>
+                      <?= $form->field($handler, $code, [
+                            'options'      => [
+                                'class' => 'filter--group ' . $class,
+                                'tag' => 'section'
+                            ],
+                        ])->label(false)->checkboxList(
+                            $options
+                            , [
+                        'class' => 'sx-filters-checkbox-options filter--group--inner',
+                        'item' => function ($index, $label, $name, $checked, $value) use ($feature)
+                        {
+                            $input = \yii\helpers\Html::checkbox($name, $checked, [
+                                'id' => 'filter-check-' .  $feature->id . "-" . $index,
+                                'value' => $value
+                            ]);
+                            return <<<HTML
+    <div class="checkbox">
+    {$input}
+    <label for="filter-check-{$feature->id}-{$index}">{$label}</label>
+    </div>
 HTML;
 
-                            }
-                        ]); */?>
-                    <? endif; ?>
+                        }
+                    ]); ?>
 
                   </div>
                 </div>
@@ -289,7 +204,7 @@ HTML;
                                 'tag' => 'section'
                             ],
                         ])->label(false)->checkboxList(
-                            $handler->getOptions($feature)
+                            \Yii::$app->formatter->booleanFormat
                             , [
                         'class' => 'sx-filters-checkbox-options filter--group--inner',
                         'item' => function ($index, $label, $name, $checked, $value) use ($feature)

@@ -8,7 +8,6 @@
 
 namespace v3p\aff\savedFilters;
 
-use common\widgets\filters\V3pPerPageFiltersHandler;
 use skeeks\cms\models\CmsContent;
 use skeeks\cms\models\CmsContentElement;
 use skeeks\cms\modules\admin\widgets\form\ActiveFormUseTab;
@@ -60,18 +59,12 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
         ];
     }
 
-    protected $_v3pConcept = false;
     /**
      * @return V3pConcept
      */
     public function getV3pConcept()
     {
-        if ($this->_v3pConcept !== false) {
-            return $this->_v3pConcept;
-        }
-
-        $this->_v3pConcept = V3pConcept::findOne($this->v3p_concept_id);
-        return $this->_v3pConcept;
+        return V3pConcept::findOne($this->v3p_concept_id);
     }
 
     /*public function load($data, $formName = null)
@@ -115,7 +108,7 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
 
             $ft_soption_query = V3pFtSoption::find()
                 ->select(['id'])
-                ->where(['feature_id' => V3pFeature::ID_CATEGORY])
+                ->where(['feature_id' => 1])
                 ->andWhere([
                     '>=',
                     'lft',
@@ -128,7 +121,7 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
                 ]);
 
             $unionQueries[] = V3pProductFeatureValue::find()->select(['product_id as id'])->where([
-                'feature_id' => V3pFeature::ID_CATEGORY,
+                'feature_id' => 1,
                 'ft_soption_id' => $ft_soption_query,
             ]);
         } elseif ($v3pConcept->base_brand_id) {
@@ -144,7 +137,7 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
 
             $ft_soption_query = V3pFtSoption::find()
                 ->select(['id'])
-                ->where(['feature_id' => V3pFeature::ID_BRAND])
+                ->where(['feature_id' => 2])
                 ->andWhere([
                     '>=',
                     'lft',
@@ -157,7 +150,7 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
                 ]);
 
             $unionQueries[] = V3pProductFeatureValue::find()->select(['product_id as id'])->where([
-                'feature_id' => V3pFeature::ID_BRAND,
+                'feature_id' => 2,
                 'ft_soption_id' => $ft_soption_query,
             ]);
         }
@@ -190,8 +183,8 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
         }
 
         if ($unionQuery) {
-            $activeQuery->joinWith(['v3toysProductProperty']);
-            $activeQuery->andWhere(['in', "v3toysProductProperty.v3toys_id", $unionQuery]);
+            $activeQuery->joinWith(['v3toysProductProperty as v3property']);
+            $activeQuery->andWhere(['in', "v3property.v3toys_id", $unionQuery]);
         }
 
         return $this;
@@ -207,32 +200,11 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
         return $this;
     }
 
-    public function loadToPerPageFilterHandler(V3pPerPageFiltersHandler $perPageFiltersHandler)
-    {
-        $this->v3pConcept->per_page;
-        if ($sOptions = $perPageFiltersHandler->sOptions) {
-            if (!isset($sOptions[$this->v3pConcept->per_page]))
-            {
-                $sOptions = ArrayHelper::merge([(string) $this->v3pConcept->per_page => (int) $this->v3pConcept->per_page], $sOptions);
-            }
-        } else {
-            $sOptions = [(string) $this->v3pConcept->per_page => (int) $this->v3pConcept->per_page];
-        }
-
-        $perPageFiltersHandler->setSOptions($sOptions);
-        $perPageFiltersHandler->value = $this->v3pConcept->per_page;
-
-        return $this;
-    }
-
     /**
      * @param V3pFeatureValueHandler $v3pFeatureValueHandler
      * @return $this
      */
     public function loadToV3pFilterHandler(V3pFeatureValueHandler $v3pFeatureValueHandler) {
-        $v3pFeatureValueHandler->base_brand_id = $this->v3pConcept->base_brand_id;
-        $v3pFeatureValueHandler->base_category_id = $this->v3pConcept->base_category_id;
-
         if ($this->v3pConcept && $this->v3pConcept->filter_values) {
             foreach ($this->v3pConcept->filter_values as $row) {
                 $featureId = ArrayHelper::getValue($row, 'feature_id');
@@ -242,18 +214,7 @@ class V3pConceptSavedFiltersHandler extends \skeeks\cms\savedFilters\SavedFilter
                     /*print_r($attribute);
                     print_r($row);
                     die;*/
-                    if (isset($v3pFeatureValueHandler->{$attribute})) {
-                        if ($v3pFeatureValueHandler->{$attribute}) {
-                            $v3pFeatureValueHandler->{$attribute} = ArrayHelper::merge($v3pFeatureValueHandler->{$attribute}, [ArrayHelper::getValue($row, 'ft_soption_id')]);
-                        } else {
-                            $v3pFeatureValueHandler->{$attribute} = [ArrayHelper::getValue($row, 'ft_soption_id')];
-                        }
-
-                    } else
-                    {
-                        //TODO: варнинг
-                    }
-
+                    $v3pFeatureValueHandler->{$attribute} = [ArrayHelper::getValue($row, 'ft_soption_id')];
                 }
             }
         }
