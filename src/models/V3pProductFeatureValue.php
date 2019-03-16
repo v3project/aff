@@ -249,4 +249,18 @@ class V3pProductFeatureValue extends ActiveRecord
 
         throw new Exception('!!!');
     }
+
+    /**
+     * @param $v3pProductId
+     * @return ActiveQuery
+     */
+    public static function findByV3pProduct($v3pProductId) {
+        return static::find()
+            ->with('feature')
+            ->joinWith('feature as f')
+            ->with('ftSoption')
+            ->orderBy(['f.priority' => SORT_ASC])
+            ->where(['product_id' => $v3pProductId])
+            ->andWhere(['NOT IN', 'f.id', V3pFeature::HIDDEN_FEATURE_IDS]);
+    }
 }

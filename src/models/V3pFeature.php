@@ -38,7 +38,6 @@ class V3pFeature extends ActiveRecord
 {
     const ID_CATEGORY = 1;
     const ID_BRAND = 2;
-
     const VALUE_TYPE_LEAF_SOPTION = 'leaf_soption';
     const VALUE_TYPE_ANY_SOPTION = 'any_soption';
     const VALUE_TYPE_BOOL = 'bool';
@@ -49,6 +48,13 @@ class V3pFeature extends ActiveRecord
     const VALUE_TYPE_JSON = 'json';
     const VALUE_TYPE_STRING = 'string';
     const VALUE_TYPE_TEXT = 'text';
+    const HIDDEN_FEATURE_IDS = [
+            16 //Отображать возраст в месяцах?
+        ,   118 //Тип Ассортиментности
+        ,   169 //Обобщенные данные
+        ,   121 //Изображение
+        ,   261 //Тип отображения возраста
+    ];
 
     /**
      * @inheritdoc
