@@ -18,16 +18,9 @@
     "minimum-stability": "dev",
     "require": {
         "skeeks/cms-tree-redirect": "1.0.0-alpha2@dev",
-
         "skeeks/cms-basic-shop": "^1.0.0 || dev-master",
 
-        "v3project/yii2-helpers": "~1.0.8",
-        "v3project/yii2-hiccup": "^1.0",
-
-        "kiwi/func": "^0.0.1",
-        "kiwi/yii2-fancytree": "^0.0.1",
-        "kiwi/yii2-kiwi": "^0.0.1",
-        "kiwi/yii2-kiwi-soptions": "^0.0.1"
+        "v3project/yii2-helpers": "~1.0.8"
     },
     "autoload": {
         "psr-4": {
