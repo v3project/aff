@@ -69,6 +69,7 @@ class V3pProductFeatureValue extends ActiveRecord
             [['ft_text_value', 'feature_value_as_json', 'feature_value_as_text'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['product_id', 'feature_id', 'feature_value_type'], 'required'],
+
             [
                 [
                     'id',
@@ -85,7 +86,25 @@ class V3pProductFeatureValue extends ActiveRecord
                     'ft_soption_depth',
                     'feature_priority'
                 ],
-                'integer'
+                'trim',
+            ],
+            [
+                [
+                    'id',
+                    'product_id',
+                    'feature_id',
+                    'ft_soption_id',
+                    'ft_int_value',
+                    'ft_int_value2',
+                    'check_is_valid',
+                    'feature_min_value',
+                    'feature_max_value',
+                    'feature_min_choosen_soption_depth',
+                    'feature_max_choosen_soption_depth',
+                    'ft_soption_depth',
+                    'feature_priority'
+                ],
+                'integer',
             ],
             [
                 ['feature_value_type', 'ft_not_value', 'ft_string_value', 'ft_json_value', 'feature_type'],

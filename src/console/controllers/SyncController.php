@@ -122,7 +122,7 @@ class SyncController extends Controller
                 if ($model->save()) {
                     $this->stdout(" - обновлена!\n", Console::FG_GREEN);
                 } else {
-                    $this->stdout(" - не обновлена - " . print_r($model->errors, true) . " \n", Console::FG_RED);
+                    $this->stdout(" - не обновлена - " . print_r($model->errors, true) . print_r($model->toArray(), true) . " \n", Console::FG_RED);
                     die;
                 }
 
