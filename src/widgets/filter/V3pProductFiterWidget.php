@@ -27,7 +27,7 @@ class V3pProductFiterWidget extends QueryFilterShortUrlWidget
      */
     public function init()
     {
-        \Yii::$app->canurl->ADDimportant_pname($this->filtersParamName);
+        \Yii::$app->seo->canurl->ADDimportant_pname($this->filtersParamName);
         parent::init();
     }
 

@@ -6,7 +6,6 @@
  * @date 06.11.2017
  */
 $config = [
-    'bootstrap' => ['v3p'],
 
     'components' => [
 

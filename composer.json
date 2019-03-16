@@ -17,7 +17,8 @@
     ], 
     "minimum-stability": "dev",
     "require": {
-        "v3project/yii2-helpers": "~1.0.8"
+        "v3project/yii2-helpers": "~1.0.8",
+        "skeeks/cms-saved-filters": "dev-master@dev"
     },
     "autoload": {
         "psr-4": {

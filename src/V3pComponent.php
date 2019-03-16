@@ -25,32 +25,11 @@ use yii\widgets\ActiveForm;
  * Class V3pComponent
  * @package v3p\aff
  */
-class V3pComponent extends Component implements BootstrapInterface
+class V3pComponent extends Component
 {
     public $key;
 
     public $cms_content_id;
-
-    /**
-     * @param \yii\base\Application $application
-     */
-    public function bootstrap($application)
-    {
-        if ($application instanceof Application) {
-
-            Event::on(BackendComponent::class, BackendComponent::EVENT_BEFORE_RUN, function($e) {
-
-                \Yii::$app->on(Application::EVENT_BEFORE_ACTION, function($e) {
-
-                    /*$actions = \Yii::$app->controller->actions;
-
-                    $actions[''] =*/
-
-                });
-
-            });
-        }
-    }
 
     /**
      * @return array
