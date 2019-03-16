@@ -17,40 +17,17 @@
     ], 
     "minimum-stability": "dev",
     "require": {
-        "skeeks/cms": "dev-master@dev",
-        "skeeks/cms-saved-filters": "dev-master@dev",
-        "skeeks/yii2-query-filter": "dev-master@dev",
-        "skeeks/cms-dadata-suggest": "~1.1.2",
-        "skeeks/cms-ya-map": "~1.1.0",
         "skeeks/cms-tree-redirect": "1.0.0-alpha2@dev",
 
-        "skeeks/cms-basic-shop": "~1.0.0 || dev-master",
-        "skeeks/cms-vk-comments": "~1.2.0",
-        "skeeks/cms-ya-share": "~2.0.0",
-        "skeeks/cms-vk-community": "~1.2.0",
-        "skeeks/yii2-template-smarty-asset": "1.1.5",
-        "skeeks/cms-external-links": "~1.2.0",
-        "skeeks/cms-instagram-widget": "~1.1.0",
+        "skeeks/cms-basic-shop": "^1.0.0 || dev-master",
 
         "v3project/yii2-helpers": "~1.0.8",
         "v3project/yii2-hiccup": "^1.0",
 
-        "yiisoft/yii2-debug": "~2.0.12",
-
-        "skeeks/cms-toolbar": "dev-master@dev",
-        "skeeks/cms-marketplace": "dev-master@dev",
-        "skeeks/cms-shop": "dev-master@dev",
-        "skeeks/cms-backend": "dev-master@dev",
-        "v3project/yii2-product-filter": "dev-master@dev",
-
         "kiwi/func": "^0.0.1",
         "kiwi/yii2-fancytree": "^0.0.1",
         "kiwi/yii2-kiwi": "^0.0.1",
-        "kiwi/yii2-kiwi-soptions": "^0.0.1",
-
-        "v3toys/yii2-api": "~1.0.1",
-        "v3toys/yii2-v3project-api": "~1.0.1",
-        "v3toys/skeeks": "dev-master@dev"
+        "kiwi/yii2-kiwi-soptions": "^0.0.1"
     },
     "autoload": {
         "psr-4": {
